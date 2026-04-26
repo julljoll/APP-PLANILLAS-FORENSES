@@ -89,7 +89,7 @@ const initialActa: ActaData = {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'dictamen' | 'prcc' | 'acta'>('dictamen');
+  const [activeTab, setActiveTab] = useState<'acta' | 'prcc' | 'dictamen'>('acta');
   const [report, setReport] = useState<ReportData>(initialReport);
   const [prcc, setPrcc] = useState<PRCCData>(initialPRCC);
   const [acta, setActa] = useState<ActaData>(initialActa);
@@ -114,33 +114,72 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 p-4 lg:p-8 flex justify-center">
-      <div className="w-full max-w-6xl bg-white rounded-xl shadow-xl overflow-hidden flex flex-col h-[90vh]">
-        <div className="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shrink-0">
-          <div className="flex items-center gap-3">
-            <Shield className="text-teal-400" size={32} />
+    <div className="flex h-screen w-full bg-[#fcfcfd] font-sans text-slate-900 overflow-hidden relative">
+      <div className="hidden md:flex w-72 bg-[#0a1122] flex-col shrink-0 relative z-20 shadow-2xl">
+        <div className="p-8 pb-4">
+          <div className="flex items-center gap-3 mb-2">
+            <Shield className="text-amber-500" size={36} />
             <div>
-              <h1 className="font-bold text-xl tracking-widest leading-tight">SHA256.US</h1>
-              <p className="text-[10px] uppercase font-bold tracking-wider text-teal-200">Laboratorio de Informática Forense y Ciberseguridad SHA256.US</p>
+              <h1 className="font-serif font-bold text-2xl tracking-widest text-white print:hidden">SHA256.US</h1>
             </div>
           </div>
+          <p className="text-[10px] uppercase font-semibold tracking-widest text-amber-500/80 mb-10 leading-relaxed max-w-[200px]">
+            Laboratorio de Informática Forense y Ciberseguridad
+          </p>
+
+          <nav className="flex flex-col gap-1.5">
+            <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2 pl-3">Documentos Legales</h3>
+            <SidebarButton active={activeTab === 'acta'} onClick={() => setActiveTab('acta')} icon={<PenTool size={18} />} label="Acta Consignación" />
+            <SidebarButton active={activeTab === 'prcc'} onClick={() => setActiveTab('prcc')} icon={<LayoutTemplate size={18} />} label="Planilla PRCC" />
+            <SidebarButton active={activeTab === 'dictamen'} onClick={() => setActiveTab('dictamen')} icon={<FileText size={18} />} label="Dictamen Pericial" />
+          </nav>
+        </div>
+        
+        <div className="mt-auto p-8 border-t border-slate-800/50">
+          <p className="text-[10px] text-slate-500 mb-3 uppercase tracking-widest">Acciones</p>
           <button 
             onClick={() => setIsPrintMode(true)}
-            className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            className="w-full flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white px-4 py-3 rounded-md text-sm font-semibold transition-all shadow-[0_4px_14px_0_rgba(217,119,6,0.39)] hover:shadow-[0_6px_20px_rgba(217,119,6,0.23)] hover:-translate-y-0.5"
           >
-            <Printer size={16} /> Generar PDF ({activeTab.toUpperCase()})
+            <Printer size={18} /> <span>Generar PDF</span>
           </button>
         </div>
+      </div>
 
-        <div className="flex bg-slate-800 shrink-0 overflow-x-auto scrolbar-hide">
-          <TabButton active={activeTab === 'dictamen'} onClick={() => setActiveTab('dictamen')} icon={<FileText size={16} />} label="Dictamen Pericial" />
-          <TabButton active={activeTab === 'prcc'} onClick={() => setActiveTab('prcc')} icon={<LayoutTemplate size={16} />} label="Planilla PRCC" />
-          <TabButton active={activeTab === 'acta'} onClick={() => setActiveTab('acta')} icon={<PenTool size={16} />} label="Acta de Consignación" />
-        </div>
+      {/* Mobile nav */}
+      <div className="md:hidden fixed bottom-0 w-full bg-[#0a1122] flex justify-around p-2 z-50 border-t border-slate-800">
+          <button onClick={() => setActiveTab('acta')} className={`p-3 rounded-lg flex-1 flex justify-center ${activeTab === 'acta' ? 'bg-amber-500/20 text-amber-500' : 'text-slate-400'}`}><PenTool size={20} /></button>
+          <button onClick={() => setActiveTab('prcc')} className={`p-3 rounded-lg flex-1 flex justify-center ${activeTab === 'prcc' ? 'bg-amber-500/20 text-amber-500' : 'text-slate-400'}`}><LayoutTemplate size={20} /></button>
+          <button onClick={() => setActiveTab('dictamen')} className={`p-3 rounded-lg flex-1 flex justify-center ${activeTab === 'dictamen' ? 'bg-amber-500/20 text-amber-500' : 'text-slate-400'}`}><FileText size={20} /></button>
+          <button onClick={() => setIsPrintMode(true)} className="p-3 rounded-lg text-white bg-amber-600 flex-1 mx-1 shadow-md flex justify-center"><Printer size={20} /></button>
+      </div>
 
-        <div className="p-6 overflow-y-auto flex-grow bg-slate-50">
+      <div className="flex-1 overflow-y-auto relative pb-20 md:pb-0">
+        <div className="max-w-6xl mx-auto p-6 md:p-12 lg:p-16">
+          
+          <header className="mb-10 block md:hidden">
+            <div className="flex items-center gap-3">
+              <Shield className="text-amber-600" size={28} />
+              <h1 className="font-serif font-bold text-xl tracking-widest text-[#0a1122]">SHA256.US</h1>
+            </div>
+            <p className="text-[10px] uppercase font-bold tracking-widest text-slate-500 mt-1">Lab. Informática Forense</p>
+          </header>
+
+          <div className="mb-12">
+            <h2 className="text-3xl md:text-4xl font-serif font-medium text-[#0a1122] tracking-tight mb-2">
+              {activeTab === 'dictamen' && 'Dictamen Pericial de Extracción'}
+              {activeTab === 'prcc' && 'Planilla de Registro de Cadena de Custodia (PRCC)'}
+              {activeTab === 'acta' && 'Acta de Obtención por Consignación'}
+            </h2>
+            <div className="h-1 w-20 bg-amber-500 mb-4 rounded-full" />
+            <p className="text-sm text-slate-500 max-w-2xl leading-relaxed">
+              Complete los campos a continuación para generar el documento oficial bajo el marco procesal penal y estándares internacionales.
+            </p>
+          </div>
+
+          {/* Dictamen Form */}
           {activeTab === 'dictamen' && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 md:gap-12">
               <div className="space-y-6">
                 <FormCard title="I-II. Contexto y Evidencia (Estructura Obligatoria)" icon={<FileText size={16} />}>
                   <TextareaField label="Motivo de la Peritación" placeholder="Ej: Investigación penal solicitada para la extracción..." value={report.motivo} onChange={(v) => setReport({...report, motivo: v})} />
@@ -161,7 +200,7 @@ export default function App() {
                   title="IV. Resultados Obtenidos" 
                   icon={<Archive size={16} />} 
                   action={
-                    <button onClick={addResult} className="text-xs flex items-center gap-1 text-teal-600 hover:text-teal-800 font-medium bg-teal-50 px-2 py-1 rounded">
+                    <button onClick={addResult} className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1 text-amber-600 hover:text-amber-700 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-md transition-colors border border-amber-200/50">
                       <Plus size={14} /> Agregar
                     </button>
                   }
@@ -319,12 +358,14 @@ export default function App() {
 
 // --- MICROCOMPONENTS ---
 
-const TabButton = memo(({ active, icon, label, onClick }: any) => {
+const SidebarButton = memo(({ active, icon, label, onClick }: any) => {
   return (
     <button 
       onClick={onClick}
-      className={`flex items-center gap-2 px-6 py-4 text-sm font-medium transition-colors ${
-        active ? 'bg-white text-teal-600 border-t-2 border-teal-600' : 'text-slate-300 hover:text-white hover:bg-slate-700 border-t-2 border-transparent'
+      className={`w-full flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-all ${
+        active 
+          ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' 
+          : 'text-slate-400 hover:text-slate-100 hover:bg-white/5 border border-transparent'
       }`}
     >
       {icon} {label}
@@ -334,10 +375,10 @@ const TabButton = memo(({ active, icon, label, onClick }: any) => {
 
 const FormCard = memo(({ title, icon, action, children }: any) => {
   return (
-    <div className="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-      <div className="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
-        <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-          <span className="text-slate-400">{icon}</span> {title}
+    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200/60 ring-1 ring-slate-900/5 transition-all hover:shadow-md">
+      <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-5">
+        <h2 className="text-sm font-bold text-[#0a1122] flex items-center gap-2 uppercase tracking-wide">
+          <span className="text-amber-500">{icon}</span> {title}
         </h2>
         {action && <div>{action}</div>}
       </div>
@@ -349,9 +390,9 @@ const FormCard = memo(({ title, icon, action, children }: any) => {
 const InputField = memo(({ label, value, onChange, fontMono, className = '', placeholder }: any) => {
   return (
     <div className={className}>
-      <label className="block text-xs font-semibold text-slate-600 mb-1">{label}</label>
+      <label className="block text-[11px] font-bold tracking-wider uppercase text-slate-500 mb-1.5">{label}</label>
       <input 
-        className={`w-full text-sm border border-slate-200 rounded-md py-2 px-3 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition-shadow ${fontMono ? 'font-mono text-slate-600' : ''}`}
+        className={`w-full text-sm bg-slate-50 border border-slate-200 rounded-md py-2.5 px-3 focus:bg-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 hover:border-slate-300 outline-none transition-all ${fontMono ? 'font-mono text-slate-600' : 'text-slate-800'}`}
         value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)}
       />
     </div>
@@ -361,9 +402,9 @@ const InputField = memo(({ label, value, onChange, fontMono, className = '', pla
 const TextareaField = memo(({ label, value, onChange, className = '', placeholder }: any) => {
   return (
     <div className={className}>
-      <label className="block text-xs font-semibold text-slate-600 mb-1">{label}</label>
+      <label className="block text-[11px] font-bold tracking-wider uppercase text-slate-500 mb-1.5">{label}</label>
       <textarea 
-        className="w-full text-sm border border-slate-200 rounded-md py-2 px-3 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none h-20 resize-none transition-shadow"
+        className="w-full text-sm bg-slate-50 border border-slate-200 rounded-md py-2.5 px-3 focus:bg-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 hover:border-slate-300 outline-none h-24 resize-none transition-all text-slate-800"
         value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)}
       />
     </div>
