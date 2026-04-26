@@ -118,7 +118,7 @@ export default function App() {
       <div className="hidden md:flex w-72 bg-[#0a1122] flex-col shrink-0 relative z-20 shadow-2xl">
         <div className="p-8 pb-4">
           <div className="flex items-center gap-3 mb-2">
-            <Shield className="text-amber-500" size={36} />
+            <img src="/favicon.svg" alt="SHA256.US Logo" className="w-9 h-9" />
             <div>
               <h1 className="font-serif font-bold text-2xl tracking-widest text-white print:hidden">SHA256.US</h1>
             </div>
@@ -159,7 +159,7 @@ export default function App() {
           
           <header className="mb-10 block md:hidden">
             <div className="flex items-center gap-3">
-              <Shield className="text-amber-600" size={28} />
+              <img src="/favicon.svg" alt="SHA256.US Logo" className="w-7 h-7" />
               <h1 className="font-serif font-bold text-xl tracking-widest text-[#0a1122]">SHA256.US</h1>
             </div>
             <p className="text-[10px] uppercase font-bold tracking-widest text-slate-500 mt-1">Lab. Informática Forense</p>
@@ -433,7 +433,7 @@ const PrintHeader = memo(({ onClose, title }: any) => {
 const PdfLogo = () => (
   <div className="flex flex-col mb-4 pb-2 border-b-2 border-slate-300">
     <div className="flex items-center gap-2 mb-1">
-      <Shield size={32} className="text-black" />
+      <img src="/favicon.svg" alt="Logo" className="w-8 h-8" />
       <div className="leading-tight text-black flex flex-col justify-center">
         <div className="font-black text-xl tracking-widest uppercase">SHA256.US</div>
         <div className="text-[9px] font-bold tracking-widest uppercase mt-0.5">Laboratorio de Informática Forense y Ciberseguridad SHA256.US</div>
