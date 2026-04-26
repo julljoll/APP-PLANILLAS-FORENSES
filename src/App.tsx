@@ -14,7 +14,7 @@
  */
 import { useState, useCallback, memo } from 'react';
 import { 
-  FileText, Shield, Printer, Archive, Settings, Fingerprint, Plus, Trash2, ClipboardList, PenTool, LayoutTemplate, Smartphone
+  FileText, Shield, Printer, Archive, Settings, Fingerprint, Plus, Trash2, ClipboardList, PenTool, LayoutTemplate, Smartphone, Download
 } from 'lucide-react';
 
 interface ForensicResult {
@@ -132,7 +132,7 @@ export default function App() {
       <div className="hidden md:flex w-72 bg-[#0a1122] flex-col shrink-0 relative z-20 shadow-2xl">
         <div className="p-8 pb-4">
           <div className="flex items-center gap-3 mb-2">
-            <img src="/favicon.svg" alt="SHA256.US Logo" className="w-9 h-9" />
+            <img src="./favicon.svg" alt="SHA256.US Logo" className="w-9 h-9" />
             <div>
               <h1 className="font-serif font-bold text-2xl tracking-widest text-white print:hidden">SHA256.US</h1>
             </div>
@@ -149,14 +149,36 @@ export default function App() {
           </nav>
         </div>
         
-        <div className="mt-auto p-8 border-t border-slate-800/50">
-          <p className="text-[10px] text-slate-500 mb-3 uppercase tracking-widest">Acciones</p>
-          <button 
-            onClick={() => setIsPrintMode(true)}
-            className="w-full flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white px-4 py-3 rounded-md text-sm font-semibold transition-all shadow-[0_4px_14px_0_rgba(217,119,6,0.39)] hover:shadow-[0_6px_20px_rgba(217,119,6,0.23)] hover:-translate-y-0.5"
-          >
-            <Printer size={18} /> <span>Generar PDF</span>
-          </button>
+        <div className="mt-auto p-8 border-t border-slate-800/50 flex flex-col gap-6">
+          <div>
+            <p className="text-[10px] text-slate-500 mb-3 uppercase tracking-widest">Acciones</p>
+            <button 
+              onClick={() => setIsPrintMode(true)}
+              className="w-full flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white px-4 py-3 rounded-md text-sm font-semibold transition-all shadow-[0_4px_14px_0_rgba(217,119,6,0.39)] hover:shadow-[0_6px_20px_rgba(217,119,6,0.23)] hover:-translate-y-0.5"
+            >
+              <Printer size={18} /> <span>Generar PDF</span>
+            </button>
+          </div>
+
+          <div className="pt-6 border-t border-slate-800/50 print:hidden">
+            <a 
+              href="https://github.com/julljoll/APP-PLANILLAS-FORENSES/releases/latest" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="block p-3 rounded-lg border border-slate-700/50 bg-slate-800/30 hover:bg-slate-800/70 hover:border-slate-600 transition-all group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-slate-800/80 rounded-md text-slate-400 group-hover:text-amber-500 group-hover:bg-slate-700 transition-colors shadow-sm group-hover:shadow">
+                  <Download size={18} strokeWidth={2.5} />
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-[11px] font-bold text-slate-200 uppercase tracking-widest mb-1 group-hover:text-white transition-colors">Descargar .DEB v1.0</h4>
+                  <p className="text-[9px] text-slate-400 leading-tight">Optimizado Ubuntu 26.04</p>
+                  <p className="text-[8px] text-slate-500 mt-0.5 font-mono">Kernel Linux 6.x+</p>
+                </div>
+              </div>
+            </a>
+          </div>
         </div>
       </div>
 
@@ -173,7 +195,7 @@ export default function App() {
           
           <header className="mb-10 block md:hidden">
             <div className="flex items-center gap-3">
-              <img src="/favicon.svg" alt="SHA256.US Logo" className="w-7 h-7" />
+              <img src="./favicon.svg" alt="SHA256.US Logo" className="w-7 h-7" />
               <h1 className="font-serif font-bold text-xl tracking-widest text-[#0a1122]">SHA256.US</h1>
             </div>
             <p className="text-[10px] uppercase font-bold tracking-widest text-slate-500 mt-1">Lab. Informática Forense</p>
@@ -447,13 +469,13 @@ const PrintHeader = memo(({ onClose, title }: any) => {
 const PdfLogo = () => (
   <div className="flex flex-col mb-4 pb-2 border-b-2 border-slate-300">
     <div className="flex items-center gap-2 mb-1">
-      <img src="/favicon.svg" alt="Logo" className="w-8 h-8" />
-      <div className="leading-tight text-black flex flex-col justify-center">
+      <img src="./favicon.svg" alt="Logo" className="w-8 h-8" />
+      <div className="leading-tight text-black flex flex-col justify-center font-sans">
         <div className="font-black text-xl tracking-widest uppercase">SHA256.US</div>
         <div className="text-[9px] font-bold tracking-widest uppercase mt-0.5">Laboratorio de Informática Forense y Ciberseguridad SHA256.US</div>
       </div>
     </div>
-    <div className="text-[8px] text-slate-500 uppercase tracking-widest pl-10">
+    <div className="text-[8px] text-slate-500 uppercase tracking-widest pl-10 font-sans">
       Avenida 6, con calle 7, Edificio Mercantil La Ceiba, primer piso, oficina Nº 8, Quibor, Municipio Jiménez del Estado Lara.
     </div>
   </div>
@@ -469,7 +491,7 @@ const PrintDictamen = memo(({ report, onClose }: any) => {
           <div className="flex justify-between items-start border-b-2 border-black pb-4 mb-6">
             <div>
               <h1 className="text-lg font-bold uppercase tracking-widest leading-tight">DICTAMEN DE PERITACIÓN INFORMÁTICA</h1>
-              <p className="text-xs font-bold mt-1">República Bolivariana de Venezuela - Ministerio Público</p>
+              <p className="text-xs font-bold mt-1">República Bolivariana de Venezuela</p>
             </div>
             <div className="text-right text-[10px] uppercase font-bold tracking-tighter">
               Control: {report.perito.sello}-{new Date().getFullYear()}

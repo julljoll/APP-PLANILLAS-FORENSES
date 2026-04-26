@@ -1,6 +1,8 @@
 # Manual Único de Cadena de Custodia de Evidencias Físicas
 
 > **Descripción:** Procedimiento para la extracción y análisis de dispositivos Android (WhatsApp) siguiendo el Manual de Cadena de Custodia Venezolano.
+> 
+> **Desarrollo:** Esta aplicación fue desarrollada con la ayuda de Inteligencia Artificial (Claude, Google y Qwen).
 
 ---
 

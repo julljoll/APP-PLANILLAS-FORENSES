@@ -1,14 +1,37 @@
 {
-  "name": "react-example",
+  "name": "planillas-forenses",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Aplicacion de Planillas Forenses SHA256",
+  "author": {
+    "name": "julljoll",
+    "email": "julljoll@gmail.com"
+  },
   "type": "module",
+  "main": "electron-main.cjs",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "electron:dev": "electron --no-sandbox .",
+    "electron:build": "vite build && electron-builder"
+  },
+  "build": {
+    "appId": "us.sha256.planillasforenses",
+    "productName": "Planillas Forenses SHA256",
+    "directories": {
+      "output": "release"
+    },
+    "linux": {
+      "target": "deb",
+      "category": "Office"
+    },
+    "files": [
+      "dist/**/*",
+      "electron-main.cjs"
+    ]
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
@@ -27,6 +50,8 @@
     "@types/node": "^22.14.0",
     "autoprefixer": "^10.4.21",
     "date-fns": "^4.1.0",
+    "electron": "^41.3.0",
+    "electron-builder": "^26.8.1",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",

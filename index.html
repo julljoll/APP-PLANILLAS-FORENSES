@@ -5,13 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="description" content="Laboratorio de Informática Forense y Ciberseguridad" />
-    <!-- Copyright & Autoría -->
+
+    <!-- ══════════════════════════════════════════════════════════
+         Copyright & Autoría
+         Copyright (c) 2026 Jull R Ortiz R. Todos los derechos reservados.
+         Licencia MIT — SPDX-License-Identifier: MIT
+         Se requiere mantener este aviso en todas las copias.
+         ══════════════════════════════════════════════════════════ -->
     <meta name="author" content="julljoll" />
-    <meta name="copyright" content="Copyright (c) 2026 julljoll. Todos los derechos reservados." />
+    <meta name="copyright" content="Copyright (c) 2026 Jull R Ortiz R. MIT License." />
     <meta name="designer" content="julljoll - Diseño UX/UI y Arquitectura de la Información" />
     <meta name="publisher" content="sha256.us | siriusweb.us" />
     <meta name="reply-to" content="julljoll@gmail.com" />
     <meta name="robots" content="index, follow" />
+
+    <!-- ══════════════════════════════════════════════════════════
+         CABECERAS DE SEGURIDAD (Security Headers)
+         ══════════════════════════════════════════════════════════ -->
+
+    <!-- Content Security Policy: restringe recursos externos -->
+    <meta http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline';
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        font-src 'self' https://fonts.gstatic.com;
+        img-src 'self' data: blob:;
+        connect-src 'self' https://generativelanguage.googleapis.com;
+        object-src 'none';
+        base-uri 'self';
+        form-action 'self';
+        frame-ancestors 'none';
+        upgrade-insecure-requests;
+      " />
+
+    <!-- Evita que la app sea embebida en iframes (clickjacking) -->
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+
+    <!-- Previene sniffing de tipos MIME -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+
+    <!-- Controla la información de referencia enviada -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!-- Limita permisos de API del navegador -->
+    <meta http-equiv="Permissions-Policy"
+      content="camera=(), microphone=(), geolocation=(), payment=(), usb=()" />
+
     <title>SHA256.US - Planillas Forenses</title>
   </head>
   <body>
@@ -19,4 +59,5 @@
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
+
 
