@@ -14,11 +14,11 @@ export default defineConfig(({mode}) => {
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
         manifest: {
-          name: 'Sistema de Planillas Forenses',
-          short_name: 'Forenses',
-          description: 'Dictámenes Periciales Informáticos bajo marco legal venezolano.',
-          theme_color: '#ffffff',
-          background_color: '#ffffff',
+          name: 'sha256.us',
+          short_name: 'sha256.us',
+          description: 'Laboratorio de Informática Forense y Ciberseguridad.',
+          theme_color: '#0a1122',
+          background_color: '#fcfcfd',
           display: 'standalone',
           icons: [
             {
