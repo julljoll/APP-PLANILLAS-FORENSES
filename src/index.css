@@ -96,4 +96,16 @@
       display: block;
     }
   }
+
+  /* Vertical text for PRCC section labels */
+  .writing-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+  }
 }

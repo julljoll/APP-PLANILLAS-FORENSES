@@ -12,7 +12,7 @@ export default defineConfig(({mode}) => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+        includeAssets: ['favicon.svg', 'pwa-192x192.svg', 'pwa-512x512.svg'],
         manifest: {
           name: 'sha256.us',
           short_name: 'sha256.us',

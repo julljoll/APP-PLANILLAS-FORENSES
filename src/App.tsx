@@ -423,8 +423,8 @@ const PrintHeader = memo(({ onClose, title }: any) => {
       <div className="flex items-center gap-4">
           <span className="text-xs opacity-70 font-sans">8.5" x 11.0" (Carta)</span>
           <div className="w-[1px] h-4 bg-white/20" />
-          <button onClick={() => window.print()} className="hover:bg-white/10 p-1.5 rounded-sm transition-colors" title="Imprimir"><Printer size={18} /></button>
-        <button onClick={onClose} className="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-1 font-sans rounded transition-colors">Cerrar Visualizador</button>
+          <button type="button" onClick={() => window.print()} className="hover:bg-white/10 p-1.5 rounded-sm transition-colors" title="Imprimir"><Printer size={18} /></button>
+        <button type="button" onClick={onClose} className="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-1 font-sans rounded transition-colors">Cerrar Visualizador</button>
       </div>
     </div>
   )
@@ -528,7 +528,7 @@ const PrintDictamen = memo(({ report, onClose }: any) => {
           </div>
           <div className="mt-12 flex flex-col items-center">
             <div className="w-64 border-t-2 border-black pt-2 text-center">
-              <p className="font-bold text-sm tracking-widest">{report.perito.nombre.toUpperCase()}</p>
+              <p className="font-bold text-sm tracking-widest">{(report.perito.nombre || '').toUpperCase()}</p>
               <p className="text-[9px] uppercase font-bold">Perito Forense Informático</p>
               <p className="text-[9px] uppercase">Sello: {report.perito.sello}</p>
             </div>
@@ -566,7 +566,7 @@ const PrintPRCC = memo(({ prcc, onClose }: any) => {
           {/* II. Formas */}
           <div className="border-[1.5px] border-black mb-2">
              <div className="bg-black text-white text-[10px] font-bold px-1 uppercase">II. FORMAS DE OBTENCIÓN DE LA EVIDENCIA</div>
-             <div className="p-1 text-[10px] font-bold text-center py-2 bg-slate-100">{prcc.formaObtencion.toUpperCase()}</div>
+             <div className="p-1 text-[10px] font-bold text-center py-2 bg-slate-100">{(prcc.formaObtencion || '').toUpperCase()}</div>
           </div>
           {/* III. Operario */}
           <div className="border-[1.5px] border-black mb-2">
