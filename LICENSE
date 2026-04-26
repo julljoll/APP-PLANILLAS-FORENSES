@@ -1,67 +1,23 @@
-AVISO DE DERECHOS DE AUTOR / COPYRIGHT NOTICE
-===============================================
+MIT License
 
 Copyright (c) 2026 julljoll
-Todos los derechos reservados. All rights reserved.
+https://sha256.us | https://siriusweb.us
+julljoll@gmail.com
 
-Sitios web / Websites:
-  https://sha256.us
-  https://siriusweb.us
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-Correo de contacto / Contact email:
-  julljoll@gmail.com
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
----
-
-CRÉDITOS DE AUTORÍA / AUTHORSHIP CREDITS
------------------------------------------
-
-  Diseño UX/UI:                 julljoll
-  Arquitectura de la Información: julljoll
-  Programación / Development:    julljoll
-
----
-
-TÉRMINOS DE USO / TERMS OF USE
---------------------------------
-
-Este software, incluyendo su diseño UX/UI, arquitectura de la información,
-código fuente y documentación asociada, es propiedad intelectual exclusiva
-de su autor (julljoll) y está protegido por:
-
-  - La Ley sobre el Derecho de Autor de la República Bolivariana de Venezuela
-    (Gaceta Oficial N° 4.638 Extraordinario del 01/10/1993, con sus reformas).
-  - El Convenio de Berna para la Protección de las Obras Literarias y Artísticas.
-  - El Tratado de la OMPI sobre Derecho de Autor (WCT, 1996).
-  - La Ley sobre Mensajes de Datos y Firmas Electrónicas (Venezuela, 2001).
-  - La legislación de propiedad intelectual aplicable en las jurisdicciones
-    donde este software sea utilizado.
-
-QUEDA EXPRESAMENTE PROHIBIDO, sin autorización escrita del titular:
-  a) Reproducir total o parcialmente este software o su diseño.
-  b) Distribuir, sublicenciar, vender o transferir el software.
-  c) Modificar, traducir, adaptar o crear obras derivadas.
-  d) Descompilar, aplicar ingeniería inversa o desensamblar el código.
-  e) Eliminar o alterar este aviso de derechos de autor.
-
-This software and its intellectual property (including UX/UI design,
-information architecture, and source code) are the exclusive property of
-julljoll and are protected by international copyright law and treaties.
-Unauthorized reproduction, distribution, or modification is strictly
-prohibited and may result in severe civil and criminal penalties.
-
----
-
-EXENCIÓN DE RESPONSABILIDAD / DISCLAIMER
------------------------------------------
-
-Este software se proporciona "tal cual", sin garantía de ningún tipo,
-expresa o implícita. El autor no será responsable por daños directos,
-indirectos, incidentales o consecuentes derivados del uso de este software.
-
----
-
-Para solicitar permisos o licencias de uso, contactar a:
-  julljoll@gmail.com
-  https://sha256.us
-  https://siriusweb.us
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
