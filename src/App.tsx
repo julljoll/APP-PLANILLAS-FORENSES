@@ -1,3 +1,26 @@
+/**
+ * @copyright Copyright (c) 2026 julljoll
+ *
+ * Todos los derechos reservados. All rights reserved.
+ *
+ * Diseño UX/UI, Arquitectura de la Información y Programación:
+ *   Autor:   julljoll
+ *   Correo:  julljoll@gmail.com
+ *   Web:     https://sha256.us | https://siriusweb.us
+ *
+ * Este software y su código fuente son propiedad intelectual de su autor.
+ * Queda prohibida su reproducción, distribución o modificación total o
+ * parcial sin autorización expresa y por escrito del titular del copyright,
+ * de conformidad con la Ley sobre el Derecho de Autor (Venezuela),
+ * el Convenio de Berna para la Protección de las Obras Literarias y
+ * Artísticas, y demás tratados internacionales aplicables.
+ *
+ * This software is protected by copyright law and international treaties.
+ * Unauthorized reproduction or distribution of this software, or any
+ * portion of it, may result in severe civil and criminal penalties.
+ *
+ * SPDX-License-Identifier: LicenseRef-Proprietary
+ */
 import { useState, useCallback, memo } from 'react';
 import { 
   FileText, Shield, Printer, Archive, Settings, Fingerprint, Plus, Trash2, ClipboardList, PenTool, LayoutTemplate, Smartphone
