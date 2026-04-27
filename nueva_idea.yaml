@@ -1,0 +1,297 @@
+# Especificación de la aplicación de Cadena de Custodia (PRCC)
+# Versión: 1.0
+# Descripción: Generación automática de Planillas de Registro de Cadena de Custodia con firma SHA-256
+
+nombre: "Sistema de Gestión de PRCC"
+plataforma: "Electron + SQLite + Node.js"
+sistema_operativo: "Ubuntu 24.04"
+formato_empaquetado: ".deb"
+
+# ========================
+# ENTIDADES (Modelo de datos)
+# ========================
+entidades:
+  - nombre: "PlanillaPRCC"
+    tabla_sqlite: "prcc"
+    campos:
+      - nombre: "id"
+        tipo: "INTEGER PRIMARY KEY AUTOINCREMENT"
+        descripcion: "Identificador interno"
+      - nombre: "cedula"
+        tipo: "TEXT NOT NULL"
+        descripcion: "Cédula del funcionario que genera la planilla"
+        indice: true
+      - nombre: "hash"
+        tipo: "TEXT UNIQUE NOT NULL"
+        descripcion: "Número de planilla / firma electrónica SHA-256"
+        indice: true
+      - nombre: "tipo"
+        tipo: "TEXT NOT NULL"
+        descripcion: "Valores: 'inicial' o 'derivada'"
+      - nombre: "evidencia_descripcion"
+        tipo: "TEXT"
+        descripcion: "Descripción del dispositivo o hallazgo"
+      - nombre: "prcc_padre_hash"
+        tipo: "TEXT"
+        descripcion: "Hash de la planilla madre (para derivadas)"
+        referencia: "hash"
+      - nombre: "fecha_generacion"
+        tipo: "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+      - nombre: "html_generado"
+        tipo: "TEXT"
+        descripcion: "Copia del HTML usado para generar el PDF (para regeneración)"
+      - nombre: "datos_extra"
+        tipo: "TEXT"
+        descripcion: "JSON con campos adicionales si se requieren"
+
+# ========================
+# FLUJOS DE TRABAJO (Workflows)
+# ========================
+workflows:
+  - nombre: "Generar planilla inicial"
+    entrada:
+      - campo: "cedula"
+        tipo: "string"
+        obligatorio: true
+        descripcion: "Cédula del funcionario receptor"
+      - campo: "descripcion"
+        tipo: "string"
+        obligatorio: true
+        descripcion: "Descripción de la evidencia principal (dispositivo, caso, etc.)"
+    proceso:
+      - paso: 1
+        accion: "Generar hash único"
+        funcion: "SHA256(cedula + 'inicial' + descripcion + timestamp + random)"
+        resultado: "hash_planilla"
+      - paso: 2
+        accion: "Construir HTML de la planilla"
+        template: "plantilla_inicial.html"
+        variables:
+          - hash: "{{hash_planilla}}"
+          - cedula: "{{cedula}}"
+          - tipo: "inicial"
+          - descripcion: "{{descripcion}}"
+          - fecha_actual: "{{now}}"
+      - paso: 3
+        accion: "Guardar en base de datos"
+        tabla: "prcc"
+        valores:
+          cedula: "{{cedula}}"
+          hash: "{{hash_planilla}}"
+          tipo: "inicial"
+          evidencia_descripcion: "{{descripcion}}"
+          html_generado: "{{html}}"
+      - paso: 4
+        accion: "Generar PDF automáticamente (sin diálogo de impresión)"
+        metodo: "BrowserWindow.printToPDF"
+        configuracion:
+          pageSize: "A4"
+          printBackground: true
+        destino: "diálogo de guardado (showSaveDialog)"
+        nombre_archivo: "PRCC_{{hash_planilla.substring(0,8)}}.pdf"
+      - paso: 5
+        accion: "Retornar al frontend"
+        respuesta:
+          hash: "{{hash_planilla}}"
+          pdfPath: "ruta_donde_se_guardo"
+          ok: true
+
+  - nombre: "Generar planilla derivada"
+    entrada:
+      - campo: "cedula"
+        tipo: "string"
+        obligatorio: true
+        descripcion: "Cédula del perito forense"
+      - campo: "descripcion_hallazgo"
+        tipo: "string"
+        obligatorio: true
+        descripcion: "Descripción del archivo/evidencia derivada (chat, imagen, base de datos, etc.)"
+      - campo: "hash_padre"
+        tipo: "string"
+        obligatorio: false
+        descripcion: "Hash de la planilla inicial que originó esta derivada"
+    proceso:
+      - paso: 1
+        accion: "Validar que exista la planilla padre (si se proporciona)"
+        consulta_sql: "SELECT 1 FROM prcc WHERE hash = '{{hash_padre}}'"
+        si_no_existe: "error: 'La planilla padre no existe'"
+      - paso: 2
+        accion: "Generar hash único para la derivada"
+        funcion: "SHA256(cedula + 'derivada' + descripcion_hallazgo + timestamp + random + hash_padre)"
+        resultado: "hash_derivada"
+      - paso: 3
+        accion: "Construir HTML de la planilla derivada"
+        template: "plantilla_derivada.html"
+        variables:
+          - hash: "{{hash_derivada}}"
+          - cedula: "{{cedula}}"
+          - tipo: "derivada"
+          - descripcion: "{{descripcion_hallazgo}}"
+          - padre_hash: "{{hash_padre}}"
+          - fecha_actual: "{{now}}"
+      - paso: 4
+        accion: "Guardar en base de datos"
+        tabla: "prcc"
+        valores:
+          cedula: "{{cedula}}"
+          hash: "{{hash_derivada}}"
+          tipo: "derivada"
+          evidencia_descripcion: "{{descripcion_hallazgo}}"
+          prcc_padre_hash: "{{hash_padre}}"
+          html_generado: "{{html}}"
+      - paso: 5
+        accion: "Generar PDF automáticamente"
+        metodo: "printToPDF"
+        destino: "showSaveDialog"
+        nombre_archivo: "PRCC_derivada_{{hash_derivada.substring(0,8)}}.pdf"
+      - paso: 6
+        accion: "Retornar al frontend"
+        respuesta:
+          hash: "{{hash_derivada}}"
+          pdfPath: "ruta"
+          ok: true
+
+  - nombre: "Búsqueda por cédula"
+    entrada:
+      - campo: "cedula"
+        tipo: "string"
+        obligatorio: true
+    proceso:
+      - paso: 1
+        accion: "Consultar base de datos"
+        sql: "SELECT hash, tipo, evidencia_descripcion, fecha_generacion, prcc_padre_hash FROM prcc WHERE cedula = :cedula ORDER BY fecha_generacion DESC"
+      - paso: 2
+        accion: "Formatear resultado en JSON"
+      - paso: 3
+        respuesta: "lista de planillas"
+
+  - nombre: "Regenerar PDF desde hash guardado"
+    entrada:
+      - campo: "hash"
+        tipo: "string"
+        obligatorio: true
+    proceso:
+      - paso: 1
+        accion: "Obtener HTML guardado de la BD"
+        sql: "SELECT html_generado FROM prcc WHERE hash = :hash"
+      - paso: 2
+        accion: "Generar PDF a partir del HTML recuperado"
+        metodo: "printToPDF"
+      - paso: 3
+        respuesta: "pdfPath"
+
+# ========================
+# INTERFAZ DE USUARIO (UI)
+# ========================
+interfaz:
+  pantalla_principal:
+    componentes:
+      - tipo: "campo_texto"
+        id: "cedula"
+        label: "Cédula del funcionario"
+        obligatorio: true
+      - tipo: "area_texto"
+        id: "descripcion_inicial"
+        label: "Descripción de la evidencia principal"
+        visible_en: "inicial"
+      - tipo: "boton"
+        id: "btnGenerarInicial"
+        label: "Generar PRCC Inicial"
+        accion: "workflow.generar_inicial"
+      - tipo: "separador"
+      - tipo: "campo_texto"
+        id: "descripcion_derivada"
+        label: "Descripción del hallazgo derivado"
+        visible_en: "derivada"
+      - tipo: "lista_desplegable"
+        id: "selectPadre"
+        label: "Planilla madre (opcional)"
+        fuente: "cargar desde BD por cédula actual"
+      - tipo: "boton"
+        id: "btnGenerarDerivada"
+        label: "Nueva Evidencia Derivada"
+        accion: "workflow.generar_derivada"
+      - tipo: "separador"
+      - tipo: "campo_busqueda"
+        id: "buscarCedula"
+        label: "Buscar por cédula"
+      - tipo: "boton"
+        id: "btnBuscar"
+        label: "Buscar"
+        accion: "workflow.buscar_cedula"
+      - tipo: "contenedor_resultados"
+        id: "resultadosBusqueda"
+        permite_regenerar_pdf: true
+
+# ========================
+# FUNCIONES UTILITARIAS (JavaScript/Node.js)
+# ========================
+funciones:
+  - nombre: "generarHash"
+    parametros: ["cedula", "tipo", "descripcion", "timestamp", "random", "padreHash (opcional)"]
+    algoritmo: "crypto.createHash('sha256').update(string).digest('hex')"
+    salida: "hash hexadecimal de 64 caracteres"
+
+  - nombre: "construirHTML"
+    parametros: ["hash", "cedula", "tipo", "descripcion", "padreHash", "fecha"]
+    salida: "string HTML completo con estilos CSS inline"
+
+  - nombre: "generarPDFdesdeHTML"
+    parametros: ["html", "nombreBase"]
+    salida: "ruta del archivo PDF guardado"
+    dependencias: ["BrowserWindow", "printToPDF", "dialog.showSaveDialog", "fs.writeFile"]
+
+  - nombre: "guardarEnBD"
+    parametros: ["objeto_planilla"]
+    sql: "INSERT INTO prcc (...) VALUES (...)"
+    manejador: "sqlite (async/await)"
+
+  - nombre: "buscarPorCedula"
+    parametros: ["cedula"]
+    sql: "SELECT ... WHERE cedula = ?"
+    salida: "array de objetos"
+
+# ========================
+# CONFIGURACIÓN DE SEGURIDAD
+# ========================
+seguridad:
+  aislamiento_contexto: true
+  preload: "preload.js"
+  ipc:
+    canales:
+      - "generar-prcc"
+      - "buscar-por-cedula"
+      - "regenerar-pdf"
+    validacion_entrada: "sanitizar cédula y descripciones (evitar inyección SQL e XSS)"
+  almacenamiento:
+    encriptacion_campos_sensibles: "opcional (usar safeStorage para la cédula)"
+    archivo_db: "userData/prcc.db"
+
+# ========================
+# PLAN DE EMPAQUETADO (.deb)
+# ========================
+empaquetado:
+  herramienta: "Electron Forge con @electron-forge/maker-deb"
+  configuracion:
+    maintainer: "Tu Nombre <email>"
+    homepage: "https://tudominio.com"
+    name: "prcc-manager"
+    productName: "Gestor de Cadena de Custodia"
+    categories: ["Utility", "Office"]
+    depends: ["libsqlite3-0"]
+    icon: "./assets/icon.png"
+  comandos:
+    - "npm run make"
+    - "archivo .deb generado en out/make/deb/x64/"
+
+# ========================
+# MEJORAS FUTURAS (Ideas para continuar)
+# ========================
+mejoras:
+  - "Agregar autenticación de usuario (login con cédula y contraseña)"
+  - "Permitir exportar todo el historial de un caso a un ZIP con todos los PDFs"
+  - "Incluir generación automática de Acta de Obtención por Derivación en PDF"
+  - "Soporte para múltiples idiomas (español, inglés)"
+  - "Sincronización con servidor remoto (opcional, cumpliendo normativa de custodia)"
+  - "Agregar código QR en cada planilla que contenga el hash para verificación rápida"
+  - "Generar reporte en CSV de todas las planillas filtradas por fecha o cédula"
