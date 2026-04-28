@@ -12,10 +12,25 @@
  *
  * SPDX-License-Identifier: MIT
  */
-import { useState, useCallback, memo } from 'react';
+import { useState, useCallback, memo, useEffect } from 'react';
 import { 
-  FileText, Shield, Printer, Archive, Settings, Fingerprint, Plus, Trash2, ClipboardList, PenTool, LayoutTemplate, Smartphone, Download
+  FileText, Shield, Printer, Archive, Settings, Fingerprint, Plus, Trash2, ClipboardList, PenTool, LayoutTemplate, Smartphone, Download, Search, History, BookOpen
 } from 'lucide-react';
+import ManualViewer from './components/ManualViewer';
+
+// --- TYPES ---
+
+interface PRCCRecord {
+  id: number;
+  cedula: string;
+  hash: string;
+  tipo: 'inicial' | 'derivada';
+  evidencia_descripcion: string;
+  prcc_padre_hash: string | null;
+  fecha_generacion: string;
+  html_generado: string;
+  datos_extra: string;
+}
 
 interface ForensicResult {
   id: string;
@@ -71,43 +86,57 @@ interface ActaData {
   observaciones: string;
 }
 
+// --- INITIAL STATES ---
+
 const initialReport: ReportData = {
   motivo: "",
   descripcion: "",
-  examenes: {
-    andrillerVersion: "",
-    aleappVersion: "",
-    linuxVersion: "",
-    tecnicas: "",
-    valoresHashGrales: ""
-  },
+  examenes: { andrillerVersion: "v3.6.4", aleappVersion: "v3.1.2", linuxVersion: "Ubuntu 24.04 LTS", tecnicas: "Extracción lógica y física (solo lectura)", valoresHashGrales: "" },
   resultados: [],
   conclusiones: "",
-  consumoEvidencia: "",
+  consumoEvidencia: "La evidencia NO fue consumida ni alterada durante el proceso de peritación.",
   perito: { nombre: "", sello: "" }
 };
 
 const initialPRCC: PRCCData = {
   expediente: '', prcc: '', despachoInstruye: '', organismoInstruye: '', despachoInicia: '', organismoInicia: '',
-  direccion: '', fechaHora: '', formaObtencion: '',
+  direccion: '', fechaHora: new Date().toLocaleString(), formaObtencion: 'Obtención por Consignación',
   fijacion: { nombre: '', ci: '' }, coleccion: { nombre: '', ci: '' }, 
   descripcion: '', motivoTransferencia: '',
   entrega: { nombre: '', organismo: '', despacho: '', ci: '' }, recibe: { nombre: '', organismo: '', despacho: '', ci: '' }, observaciones: ''
 };
 
 const initialActa: ActaData = {
-  expediente: '', prcc: '', organismo: '', oficina: '', direccion: '', fecha: '', hora: '',
+  expediente: '', prcc: '', organismo: '', oficina: '', direccion: '', fecha: new Date().toLocaleDateString(), hora: new Date().toLocaleTimeString(),
   coleccion: { nombre: '', ci: '' }, fijacion: { nombre: '', ci: '' }, consignante: { nombre: '', ci: '' },
   dispositivo: { marcaModelo: '', imei: '', numero: '', estadoFisico: '' },
   descripcion: '', observaciones: ''
 };
 
+declare global {
+  interface Window {
+    electronAPI?: {
+      generarPRCC: (data: any) => Promise<any>;
+      buscarPorCedula: (cedula: string) => Promise<any>;
+      printToPDF: (data: any) => Promise<any>;
+    };
+  }
+}
+
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'acta' | 'prcc' | 'dictamen'>('acta');
+  const [activeTab, setActiveTab] = useState<'gestor-prcc' | 'acta' | 'prcc' | 'dictamen' | 'manual'>('gestor-prcc');
   const [report, setReport] = useState<ReportData>(initialReport);
   const [prcc, setPrcc] = useState<PRCCData>(initialPRCC);
   const [acta, setActa] = useState<ActaData>(initialActa);
   const [isPrintMode, setIsPrintMode] = useState(false);
+  
+  // Gestor PRCC State
+  const [cedula, setCedula] = useState('');
+  const [descInicial, setDescInicial] = useState('');
+  const [descDerivada, setDescDerivada] = useState('');
+  const [padreHash, setPadreHash] = useState('');
+  const [searchResults, setSearchResults] = useState<PRCCRecord[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   const updateResult = useCallback((id: string, field: keyof ForensicResult, value: string) => {
     setReport(prev => ({ ...prev, resultados: prev.resultados.map(r => r.id === id ? { ...r, [field]: value } : r) }));
@@ -120,6 +149,89 @@ export default function App() {
   const addResult = useCallback(() => {
     setReport(prev => ({ ...prev, resultados: [...prev.resultados, { id: Math.random().toString(36).substr(2, 9), name: '', date: '', path: '', size: '', hash: '' }] }));
   }, []);
+
+  // --- BACKEND ACTIONS ---
+
+  const handleGenerarInicial = async () => {
+    if (!cedula || !descInicial) {
+      alert('Cédula y descripción son obligatorias');
+      return;
+    }
+
+    if (!window.electronAPI) {
+      alert('Esta función solo está disponible en la versión de escritorio');
+      return;
+    }
+
+    const res = await window.electronAPI.generarPRCC({
+      cedula,
+      tipo: 'inicial',
+      descripcion: descInicial,
+      extraData: { timestamp: Date.now() }
+    });
+
+    if (res.ok) {
+      alert(`PRCC Inicial generado con éxito. Hash: ${res.hash.substring(0, 10)}...`);
+      setDescInicial('');
+      handleBuscar(); // Refresh results
+    } else {
+      alert('Error al generar: ' + res.error);
+    }
+  };
+
+  const handleGenerarDerivada = async () => {
+    if (!cedula || !descDerivada) {
+      alert('Cédula y descripción son obligatorias');
+      return;
+    }
+
+    if (!window.electronAPI) {
+      alert('Esta función solo está disponible en la versión de escritorio');
+      return;
+    }
+
+    const res = await window.electronAPI.generarPRCC({
+      cedula,
+      tipo: 'derivada',
+      descripcion: descDerivada,
+      padreHash: padreHash || null,
+      extraData: { timestamp: Date.now() }
+    });
+
+    if (res.ok) {
+      alert(`PRCC Derivada generado con éxito. Hash: ${res.hash.substring(0, 10)}...`);
+      setDescDerivada('');
+      setPadreHash('');
+      handleBuscar(); // Refresh results
+    } else {
+      alert('Error al generar: ' + res.error);
+    }
+  };
+
+  const handleBuscar = async () => {
+    if (!cedula) return;
+    setIsSearching(true);
+    if (window.electronAPI) {
+      const res = await window.electronAPI.buscarPorCedula(cedula);
+      if (res.ok) {
+        setSearchResults(res.data);
+      }
+    }
+    setIsSearching(false);
+  };
+
+  const handlePrint = async (record: PRCCRecord) => {
+    if (window.electronAPI) {
+      await window.electronAPI.printToPDF({
+        html: record.html_generado,
+        filename: `PRCC_${record.hash.substring(0, 8)}.pdf`
+      });
+    }
+  };
+
+  if (activeTab === 'manual') {
+    return <ManualViewer onClose={() => setActiveTab('gestor-prcc')} />;
+  }
 
   if (isPrintMode) {
     if (activeTab === 'dictamen') return <PrintDictamen report={report} onClose={() => setIsPrintMode(false)} />;
@@ -142,78 +254,144 @@ export default function App() {
           </p>
 
           <nav className="flex flex-col gap-1.5">
-            <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2 pl-3">Documentos Legales</h3>
+            <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2 pl-3">Módulos</h3>
+            <SidebarButton active={activeTab === 'gestor-prcc'} onClick={() => setActiveTab('gestor-prcc')} icon={<History size={18} />} label="Gestor de PRCC" />
             <SidebarButton active={activeTab === 'acta'} onClick={() => setActiveTab('acta')} icon={<PenTool size={18} />} label="Acta Consignación" />
             <SidebarButton active={activeTab === 'prcc'} onClick={() => setActiveTab('prcc')} icon={<LayoutTemplate size={18} />} label="Planilla PRCC" />
             <SidebarButton active={activeTab === 'dictamen'} onClick={() => setActiveTab('dictamen')} icon={<FileText size={18} />} label="Dictamen Pericial" />
+            <div className="h-4" />
+            <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2 pl-3">Ayuda</h3>
+            <SidebarButton active={activeTab === 'manual'} onClick={() => setActiveTab('manual')} icon={<BookOpen size={18} />} label="Manual de Usuario" />
           </nav>
         </div>
         
         <div className="mt-auto p-8 border-t border-slate-800/50 flex flex-col gap-6">
           <div>
-            <p className="text-[10px] text-slate-500 mb-3 uppercase tracking-widest">Acciones</p>
+            <p className="text-[10px] text-slate-500 mb-3 uppercase tracking-widest">Acciones Rápidas</p>
             <button 
               onClick={() => setIsPrintMode(true)}
-              className="w-full flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white px-4 py-3 rounded-md text-sm font-semibold transition-all shadow-[0_4px_14px_0_rgba(217,119,6,0.39)] hover:shadow-[0_6px_20px_rgba(217,119,6,0.23)] hover:-translate-y-0.5"
+              disabled={activeTab === 'gestor-prcc'}
+              className="w-full flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white px-4 py-3 rounded-md text-sm font-semibold transition-all shadow-[0_4px_14px_0_rgba(217,119,6,0.39)] hover:shadow-[0_6px_20px_rgba(217,119,6,0.23)] hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Printer size={18} /> <span>Generar PDF</span>
+              <Printer size={18} /> <span>Imprimir Vista</span>
             </button>
           </div>
 
           <div className="pt-6 border-t border-slate-800/50 print:hidden">
-            <a 
-              href="https://github.com/julljoll/APP-PLANILLAS-FORENSES/releases/latest" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="block p-3 rounded-lg border border-slate-700/50 bg-slate-800/30 hover:bg-slate-800/70 hover:border-slate-600 transition-all group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-slate-800/80 rounded-md text-slate-400 group-hover:text-amber-500 group-hover:bg-slate-700 transition-colors shadow-sm group-hover:shadow">
-                  <Download size={18} strokeWidth={2.5} />
+            <div className="flex items-center gap-3 p-3 rounded-lg border border-slate-700/50 bg-slate-800/30">
+                <div className="p-2 bg-slate-800/80 rounded-md text-amber-500">
+                  <Shield size={18} />
                 </div>
                 <div className="flex-1">
-                  <h4 className="text-[11px] font-bold text-slate-200 uppercase tracking-widest mb-1 group-hover:text-white transition-colors">Descargar .DEB v1.0</h4>
-                  <p className="text-[9px] text-slate-400 leading-tight">Optimizado Ubuntu 26.04</p>
-                  <p className="text-[8px] text-slate-500 mt-0.5 font-mono">Kernel Linux 6.x+</p>
+                  <h4 className="text-[11px] font-bold text-slate-200 uppercase tracking-widest">Firma SHA-256</h4>
+                  <p className="text-[9px] text-slate-400 leading-tight">Integridad Garantizada</p>
                 </div>
-              </div>
-            </a>
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Mobile nav */}
-      <div className="md:hidden fixed bottom-0 w-full bg-[#0a1122] flex justify-around p-2 z-50 border-t border-slate-800">
-          <button onClick={() => setActiveTab('acta')} className={`p-3 rounded-lg flex-1 flex justify-center ${activeTab === 'acta' ? 'bg-amber-500/20 text-amber-500' : 'text-slate-400'}`}><PenTool size={20} /></button>
-          <button onClick={() => setActiveTab('prcc')} className={`p-3 rounded-lg flex-1 flex justify-center ${activeTab === 'prcc' ? 'bg-amber-500/20 text-amber-500' : 'text-slate-400'}`}><LayoutTemplate size={20} /></button>
-          <button onClick={() => setActiveTab('dictamen')} className={`p-3 rounded-lg flex-1 flex justify-center ${activeTab === 'dictamen' ? 'bg-amber-500/20 text-amber-500' : 'text-slate-400'}`}><FileText size={20} /></button>
-          <button onClick={() => setIsPrintMode(true)} className="p-3 rounded-lg text-white bg-amber-600 flex-1 mx-1 shadow-md flex justify-center"><Printer size={20} /></button>
       </div>
 
       <div className="flex-1 overflow-y-auto relative pb-20 md:pb-0">
         <div className="max-w-6xl mx-auto p-6 md:p-12 lg:p-16">
           
-          <header className="mb-10 block md:hidden">
-            <div className="flex items-center gap-3">
-              <img src="./favicon.svg" alt="SHA256.US Logo" className="w-7 h-7" />
-              <h1 className="font-serif font-bold text-xl tracking-widest text-[#0a1122]">SHA256.US</h1>
-            </div>
-            <p className="text-[10px] uppercase font-bold tracking-widest text-slate-500 mt-1">Lab. Informática Forense</p>
-          </header>
-
           <div className="mb-12">
             <h2 className="text-3xl md:text-4xl font-serif font-medium text-[#0a1122] tracking-tight mb-2">
+              {activeTab === 'gestor-prcc' && 'Sistema de Gestión de PRCC'}
               {activeTab === 'dictamen' && 'Dictamen Pericial de Extracción'}
               {activeTab === 'prcc' && 'Planilla de Registro de Cadena de Custodia (PRCC)'}
               {activeTab === 'acta' && 'Acta de Obtención por Consignación'}
             </h2>
             <div className="h-1 w-20 bg-amber-500 mb-4 rounded-full" />
             <p className="text-sm text-slate-500 max-w-2xl leading-relaxed">
-              Complete los campos a continuación para generar el documento oficial bajo el marco procesal penal y estándares internacionales.
+              {activeTab === 'gestor-prcc' 
+                ? 'Administre la generación de planillas iniciales y derivadas con firma electrónica SHA-256.'
+                : 'Complete los campos a continuación para generar el documento oficial bajo el marco procesal penal.'}
             </p>
           </div>
 
-          {/* Dictamen Form */}
+          {/* GESTOR PRCC (NUEVA IDEA) */}
+          {activeTab === 'gestor-prcc' && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="space-y-6">
+                <FormCard title="Funcionario Responsable" icon={<Fingerprint size={16} />}>
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                      <InputField label="Cédula de Identidad" placeholder="Ej: V-12345678" value={cedula} onChange={setCedula} />
+                    </div>
+                    <div className="flex items-end">
+                      <button onClick={handleBuscar} className="bg-slate-800 text-white px-4 py-2.5 rounded-md text-sm font-semibold flex items-center gap-2 hover:bg-slate-700 transition-colors">
+                        <Search size={16} /> Buscar
+                      </button>
+                    </div>
+                  </div>
+                </FormCard>
+
+                <FormCard title="Generar PRCC Inicial" icon={<Plus size={16} />}>
+                  <TextareaField label="Descripción de la Evidencia Principal" placeholder="Ej: Dispositivo móvil Samsung, serial..., recolectado en..." value={descInicial} onChange={setDescInicial} className="mb-4" />
+                  <button onClick={handleGenerarInicial} className="w-full bg-amber-600 text-white py-3 rounded-md font-bold text-sm shadow-md hover:bg-amber-500 transition-all uppercase tracking-widest">
+                    Generar Planilla Inicial
+                  </button>
+                </FormCard>
+
+                <FormCard title="Nueva Evidencia Derivada" icon={<Plus size={16} />}>
+                  <TextareaField label="Descripción del Hallazgo Derivado" placeholder="Ej: Archivo msgstore.db extraído de la evidencia principal..." value={descDerivada} onChange={setDescDerivada} className="mb-4" />
+                  <div className="mb-4">
+                    <label className="block text-[11px] font-bold tracking-wider uppercase text-slate-500 mb-1.5">Planilla Madre (Opcional)</label>
+                    <select 
+                      className="w-full text-sm bg-slate-50 border border-slate-200 rounded-md py-2.5 px-3 focus:bg-white focus:border-amber-500 outline-none"
+                      value={padreHash}
+                      onChange={(e) => setPadreHash(e.target.value)}
+                    >
+                      <option value="">Seleccione una planilla previa</option>
+                      {searchResults.filter(r => r.tipo === 'inicial').map(r => (
+                        <option key={r.hash} value={r.hash}>{r.hash.substring(0, 12)}... ({r.evidencia_descripcion.substring(0, 20)}...)</option>
+                      ))}
+                    </select>
+                  </div>
+                  <button onClick={handleGenerarDerivada} className="w-full bg-slate-800 text-white py-3 rounded-md font-bold text-sm shadow-md hover:bg-slate-700 transition-all uppercase tracking-widest">
+                    Generar Planilla Derivada
+                  </button>
+                </FormCard>
+              </div>
+
+              <div className="space-y-6">
+                <FormCard title="Historial de Planillas" icon={<History size={16} />}>
+                  {isSearching ? (
+                    <div className="text-center py-10 text-slate-400">Buscando...</div>
+                  ) : searchResults.length > 0 ? (
+                    <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+                      {searchResults.map((record) => (
+                        <div key={record.id} className="p-4 rounded-lg border border-slate-200 bg-white hover:border-amber-300 transition-all group relative">
+                          <div className="flex justify-between items-start mb-2">
+                            <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${record.tipo === 'inicial' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-700'}`}>
+                              {record.tipo}
+                            </span>
+                            <span className="text-[10px] text-slate-400 font-mono">{new Date(record.fecha_generacion).toLocaleString()}</span>
+                          </div>
+                          <h4 className="text-xs font-bold text-slate-800 mb-1 font-mono break-all">{record.hash}</h4>
+                          <p className="text-[11px] text-slate-500 line-clamp-2 mb-3">{record.evidencia_descripcion}</p>
+                          <div className="flex justify-between items-center">
+                            <span className="text-[10px] text-slate-400 italic">
+                              {record.prcc_padre_hash ? `Derivado de: ${record.prcc_padre_hash.substring(0, 8)}...` : 'Evidencia Inicial'}
+                            </span>
+                            <button onClick={() => handlePrint(record)} className="text-amber-600 hover:text-amber-700 flex items-center gap-1 text-[11px] font-bold uppercase">
+                              <Printer size={14} /> PDF
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-20 text-slate-400 italic text-sm">
+                      Ingrese una cédula y pulse buscar para ver el historial.
+                    </div>
+                  )}
+                </FormCard>
+              </div>
+            </div>
+          )}
+
+          {/* EXISTING MODULES */}
           {activeTab === 'dictamen' && (
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 md:gap-12">
               <div className="space-y-6">
@@ -223,9 +401,9 @@ export default function App() {
                 </FormCard>
                 <FormCard title="III. Exámenes Practicados (ISO/IEC 27042:2015)" icon={<Settings size={16} />}>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <InputField label="Versión Andriller" placeholder="Ej: v3.6.4" value={report.examenes.andrillerVersion} onChange={(v: string) => setReport({...report, examenes: {...report.examenes, andrillerVersion: v}})} />
-                    <InputField label="Versión ALEAPP" placeholder="Ej: v3.1.2" value={report.examenes.aleappVersion} onChange={(v: string) => setReport({...report, examenes: {...report.examenes, aleappVersion: v}})} />
-                    <InputField label="Versión Linux" placeholder="Ej: Ubuntu 22.04 LTS" value={report.examenes.linuxVersion} onChange={(v: string) => setReport({...report, examenes: {...report.examenes, linuxVersion: v}})} />
+                    <InputField label="Versión Andriller" value={report.examenes.andrillerVersion} onChange={(v: string) => setReport({...report, examenes: {...report.examenes, andrillerVersion: v}})} />
+                    <InputField label="Versión ALEAPP" value={report.examenes.aleappVersion} onChange={(v: string) => setReport({...report, examenes: {...report.examenes, aleappVersion: v}})} />
+                    <InputField label="Versión Linux" value={report.examenes.linuxVersion} onChange={(v: string) => setReport({...report, examenes: {...report.examenes, linuxVersion: v}})} />
                   </div>
                   <InputField label="Técnicas Empleadas" placeholder="Ej: Extracción lógica y física (solo lectura)..." className="mb-4" value={report.examenes.tecnicas} onChange={(v: string) => setReport({...report, examenes: {...report.examenes, tecnicas: v}})} />
                   <InputField label="Hash Global (Integridad)" placeholder="Ej: e3b0c44298fc1c149afbf..." fontMono value={report.examenes.valoresHashGrales} onChange={(v: string) => setReport({...report, examenes: {...report.examenes, valoresHashGrales: v}})} />
@@ -259,8 +437,8 @@ export default function App() {
                   </div>
                 </FormCard>
                 <FormCard title="V-VI. Conclusiones y Consumo de Evidencia" icon={<Fingerprint size={16} />}>
-                  <TextareaField label="Conclusiones (Sin precalificación jurídica)" placeholder="Ej: Se determinó la existencia de registros..." value={report.conclusiones} onChange={v => setReport({...report, conclusiones: v})} className="mb-4" />
-                  <TextareaField label="Consumo o alteración de Evidencia" placeholder="Ej: La evidencia NO fue consumida ni alterada..." value={report.consumoEvidencia} onChange={v => setReport({...report, consumoEvidencia: v})} />
+                  <TextareaField label="Conclusiones (Sin precalificación jurídica)" value={report.conclusiones} onChange={v => setReport({...report, conclusiones: v})} className="mb-4" />
+                  <TextareaField label="Consumo o alteración de Evidencia" value={report.consumoEvidencia} onChange={v => setReport({...report, consumoEvidencia: v})} />
                   <div className="grid grid-cols-2 gap-4 mt-4">
                     <InputField label="Perito Informático" placeholder="Ej: Ing. Perito Forense" value={report.perito.nombre} onChange={v => setReport({...report, perito: {...report.perito, nombre: v}})} />
                     <InputField label="Sello Institucional" placeholder="Ej: 001-VZ-FOR" fontMono value={report.perito.sello} onChange={v => setReport({...report, perito: {...report.perito, sello: v}})} />
@@ -288,46 +466,46 @@ export default function App() {
                  </div>
                  <div className="grid grid-cols-2 gap-4">
                    <InputField label="Dirección Obtención" placeholder="Ej: Laboratorio Central" value={prcc.direccion} onChange={v => setPrcc({...prcc, direccion: v})} />
-                   <InputField label="Fecha y Hora" placeholder="DD/MM/AAAA HH:MM" value={prcc.fechaHora} onChange={v => setPrcc({...prcc, fechaHora: v})} />
+                   <InputField label="Fecha y Hora" value={prcc.fechaHora} onChange={v => setPrcc({...prcc, fechaHora: v})} />
                  </div>
                </FormCard>
                <FormCard title="II-IV. Forma y Operario (ISO/IEC 27037:2012)" icon={<FileText size={16} />}>
-                 <InputField label="Forma de Obtención" placeholder="Ej: Obtención por Consignación" value={prcc.formaObtencion} onChange={v => setPrcc({...prcc, formaObtencion: v})} className="mb-4" />
+                 <InputField label="Forma de Obtención" value={prcc.formaObtencion} onChange={v => setPrcc({...prcc, formaObtencion: v})} className="mb-4" />
                  <div className="grid grid-cols-2 gap-4 mb-4">
-                   <InputField label="Fijación: Nombre" placeholder="Ej: Funcionario Receptor" value={prcc.fijacion.nombre} onChange={v => setPrcc({...prcc, fijacion: {...prcc.fijacion, nombre: v}})} />
-                   <InputField label="Fijación: CI/Cred" placeholder="Ej: V-12345678" value={prcc.fijacion.ci} onChange={v => setPrcc({...prcc, fijacion: {...prcc.fijacion, ci: v}})} />
+                   <InputField label="Fijación: Nombre" value={prcc.fijacion.nombre} onChange={v => setPrcc({...prcc, fijacion: {...prcc.fijacion, nombre: v}})} />
+                   <InputField label="Fijación: CI/Cred" value={prcc.fijacion.ci} onChange={v => setPrcc({...prcc, fijacion: {...prcc.fijacion, ci: v}})} />
                  </div>
                  <div className="grid grid-cols-2 gap-4 mb-4">
-                   <InputField label="Colección: Nombre" placeholder="Ej: Funcionario Receptor" value={prcc.coleccion.nombre} onChange={v => setPrcc({...prcc, coleccion: {...prcc.coleccion, nombre: v}})} />
-                   <InputField label="Colección: CI/Cred" placeholder="Ej: V-12345678" value={prcc.coleccion.ci} onChange={v => setPrcc({...prcc, coleccion: {...prcc.coleccion, ci: v}})} />
+                   <InputField label="Colección: Nombre" value={prcc.coleccion.nombre} onChange={v => setPrcc({...prcc, coleccion: {...prcc.coleccion, nombre: v}})} />
+                   <InputField label="Colección: CI/Cred" value={prcc.coleccion.ci} onChange={v => setPrcc({...prcc, coleccion: {...prcc.coleccion, ci: v}})} />
                  </div>
-                 <TextareaField label="Descripción de la Evidencia (Empaque/Rotulado)" placeholder="Ej: Dispositivo móvil Android, color negro, en cadena de custodia..." value={prcc.descripcion} onChange={v => setPrcc({...prcc, descripcion: v})} />
+                 <TextareaField label="Descripción de la Evidencia (Empaque/Rotulado)" value={prcc.descripcion} onChange={v => setPrcc({...prcc, descripcion: v})} />
                </FormCard>
              </div>
              <div className="space-y-6">
                <FormCard title="V. Actividad de Transferencia" icon={<Fingerprint size={16} />}>
-                 <InputField label="Motivo (Resguardo/Peritaje/Traslado)" placeholder="Ej: 1. Traslado para Peritaje" value={prcc.motivoTransferencia} onChange={v => setPrcc({...prcc, motivoTransferencia: v})} className="mb-4" />
+                 <InputField label="Motivo (Resguardo/Peritaje/Traslado)" value={prcc.motivoTransferencia} onChange={v => setPrcc({...prcc, motivoTransferencia: v})} className="mb-4" />
                  <h3 className="text-xs font-bold text-slate-500 uppercase mb-2">Entrega</h3>
                  <div className="grid grid-cols-2 gap-4 mb-2">
-                   <InputField label="Nombre y Apellido" placeholder="Ej: Funcionario Receptor" value={prcc.entrega.nombre} onChange={v => setPrcc({...prcc, entrega: {...prcc.entrega, nombre: v}})} />
-                   <InputField label="C.I / Cred" placeholder="Ej: V-12345678" value={prcc.entrega.ci} onChange={v => setPrcc({...prcc, entrega: {...prcc.entrega, ci: v}})} />
+                   <InputField label="Nombre y Apellido" value={prcc.entrega.nombre} onChange={v => setPrcc({...prcc, entrega: {...prcc.entrega, nombre: v}})} />
+                   <InputField label="C.I / Cred" value={prcc.entrega.ci} onChange={v => setPrcc({...prcc, entrega: {...prcc.entrega, ci: v}})} />
                  </div>
                  <div className="grid grid-cols-2 gap-4 mb-4">
-                   <InputField label="Organismo" placeholder="Ej: CICPC" value={prcc.entrega.organismo} onChange={v => setPrcc({...prcc, entrega: {...prcc.entrega, organismo: v}})} />
-                   <InputField label="Despacho" placeholder="Ej: Sala de Evidencias" value={prcc.entrega.despacho} onChange={v => setPrcc({...prcc, entrega: {...prcc.entrega, despacho: v}})} />
+                   <InputField label="Organismo" value={prcc.entrega.organismo} onChange={v => setPrcc({...prcc, entrega: {...prcc.entrega, organismo: v}})} />
+                   <InputField label="Despacho" value={prcc.entrega.despacho} onChange={v => setPrcc({...prcc, entrega: {...prcc.entrega, despacho: v}})} />
                  </div>
                  
                  <h3 className="text-xs font-bold text-slate-500 uppercase mb-2 border-t border-slate-200 pt-4">Recibe</h3>
                  <div className="grid grid-cols-2 gap-4 mb-2">
-                   <InputField label="Nombre y Apellido" placeholder="Ej: Ing. Perito Forense" value={prcc.recibe.nombre} onChange={v => setPrcc({...prcc, recibe: {...prcc.recibe, nombre: v}})} />
-                   <InputField label="C.I / Cred" placeholder="Ej: V-87654321" value={prcc.recibe.ci} onChange={v => setPrcc({...prcc, recibe: {...prcc.recibe, ci: v}})} />
+                   <InputField label="Nombre y Apellido" value={prcc.recibe.nombre} onChange={v => setPrcc({...prcc, recibe: {...prcc.recibe, nombre: v}})} />
+                   <InputField label="C.I / Cred" value={prcc.recibe.ci} onChange={v => setPrcc({...prcc, recibe: {...prcc.recibe, ci: v}})} />
                  </div>
                  <div className="grid grid-cols-2 gap-4 mb-4">
-                   <InputField label="Organismo" placeholder="Ej: CICPC" value={prcc.recibe.organismo} onChange={v => setPrcc({...prcc, recibe: {...prcc.recibe, organismo: v}})} />
-                   <InputField label="Despacho" placeholder="Ej: Lab. Informática" value={prcc.recibe.despacho} onChange={v => setPrcc({...prcc, recibe: {...prcc.recibe, despacho: v}})} />
+                   <InputField label="Organismo" value={prcc.recibe.organismo} onChange={v => setPrcc({...prcc, recibe: {...prcc.recibe, organismo: v}})} />
+                   <InputField label="Despacho" value={prcc.recibe.despacho} onChange={v => setPrcc({...prcc, recibe: {...prcc.recibe, despacho: v}})} />
                  </div>
 
-                 <TextareaField label="Observaciones (Ej. Integridad de los precintos)" placeholder="Ej: Evidencia ingresa correctamente embalada y precintada..." value={prcc.observaciones} onChange={v => setPrcc({...prcc, observaciones: v})} />
+                 <TextareaField label="Observaciones (Ej. Integridad de los precintos)" value={prcc.observaciones} onChange={v => setPrcc({...prcc, observaciones: v})} />
                </FormCard>
              </div>
            </div>
@@ -338,50 +516,50 @@ export default function App() {
               <div className="space-y-6">
                 <FormCard title="Datos Generales" icon={<ClipboardList size={16} />}>
                   <div className="grid grid-cols-2 gap-4 mb-4">
-                    <InputField label="N° de Expediente" placeholder="Ej: MP-2024-12345" value={acta.expediente} onChange={v => setActa({...acta, expediente: v})} />
-                    <InputField label="N° de PRCC" placeholder="Ej: PRCC-001" value={acta.prcc} onChange={v => setActa({...acta, prcc: v})} />
+                    <InputField label="N° de Expediente" value={acta.expediente} onChange={v => setActa({...acta, expediente: v})} />
+                    <InputField label="N° de PRCC" value={acta.prcc} onChange={v => setActa({...acta, prcc: v})} />
                   </div>
                   <div className="grid grid-cols-2 gap-4 mb-4">
-                    <InputField label="Organismo" placeholder="Ej: CICPC" value={acta.organismo} onChange={v => setActa({...acta, organismo: v})} />
-                    <InputField label="Oficina que instruye" placeholder="Ej: Recepción de Denuncias" value={acta.oficina} onChange={v => setActa({...acta, oficina: v})} />
+                    <InputField label="Organismo" value={acta.organismo} onChange={v => setActa({...acta, organismo: v})} />
+                    <InputField label="Oficina que instruye" value={acta.oficina} onChange={v => setActa({...acta, oficina: v})} />
                   </div>
-                  <InputField label="Dirección de Obtención" placeholder="Ej: Sede Principal" value={acta.direccion} onChange={v => setActa({...acta, direccion: v})} className="mb-4" />
+                  <InputField label="Dirección de Obtención" value={acta.direccion} onChange={v => setActa({...acta, direccion: v})} className="mb-4" />
                   <div className="grid grid-cols-2 gap-4">
-                    <InputField label="Fecha" placeholder="DD/MM/AAAA" value={acta.fecha} onChange={v => setActa({...acta, fecha: v})} />
-                    <InputField label="Hora" placeholder="HH:MM" value={acta.hora} onChange={v => setActa({...acta, hora: v})} />
+                    <InputField label="Fecha" value={acta.fecha} onChange={v => setActa({...acta, fecha: v})} />
+                    <InputField label="Hora" value={acta.hora} onChange={v => setActa({...acta, hora: v})} />
                   </div>
                 </FormCard>
                 <FormCard title="Operarios que Obtienen la Evidencia" icon={<Shield size={16} />}>
                   <h3 className="text-xs font-bold text-slate-500 uppercase mb-2">Colección / Recepción</h3>
                   <div className="grid grid-cols-2 gap-4 mb-4">
-                    <InputField label="Nombre y Apellido" placeholder="Ej: Funcionario Receptor" value={acta.coleccion.nombre} onChange={v => setActa({...acta, coleccion: {...acta.coleccion, nombre: v}})} />
-                    <InputField label="C.I. o Credencial" placeholder="Ej: V-12345678" value={acta.coleccion.ci} onChange={v => setActa({...acta, coleccion: {...acta.coleccion, ci: v}})} />
+                    <InputField label="Nombre y Apellido" value={acta.coleccion.nombre} onChange={v => setActa({...acta, coleccion: {...acta.coleccion, nombre: v}})} />
+                    <InputField label="C.I. o Credencial" value={acta.coleccion.ci} onChange={v => setActa({...acta, coleccion: {...acta.coleccion, ci: v}})} />
                   </div>
                   <h3 className="text-xs font-bold text-slate-500 uppercase mb-2 border-t border-slate-200 pt-4">Fijación Fotográfica / Escrita</h3>
                   <div className="grid grid-cols-2 gap-4">
-                    <InputField label="Nombre y Apellido" placeholder="Ej: Fotógrafo Forense" value={acta.fijacion.nombre} onChange={v => setActa({...acta, fijacion: {...acta.fijacion, nombre: v}})} />
-                    <InputField label="C.I. o Credencial" placeholder="Ej: V-11223344" value={acta.fijacion.ci} onChange={v => setActa({...acta, fijacion: {...acta.fijacion, ci: v}})} />
+                    <InputField label="Nombre y Apellido" value={acta.fijacion.nombre} onChange={v => setActa({...acta, fijacion: {...acta.fijacion, nombre: v}})} />
+                    <InputField label="C.I. o Credencial" value={acta.fijacion.ci} onChange={v => setActa({...acta, fijacion: {...acta.fijacion, ci: v}})} />
                   </div>
                 </FormCard>
               </div>
               <div className="space-y-6">
-                <FormCard title="Persona que Consigna (Entrega voluntaria)" icon={<PenTool size={16} />}>
+                <FormCard title="Persona que Consigna" icon={<PenTool size={16} />}>
                   <div className="grid grid-cols-2 gap-4">
-                    <InputField label="Nombre y Apellido" placeholder="Ej: Ciudadano Voluntario" value={acta.consignante.nombre} onChange={v => setActa({...acta, consignante: {...acta.consignante, nombre: v}})} />
-                    <InputField label="Cédula de Identidad" placeholder="Ej: V-99887766" value={acta.consignante.ci} onChange={v => setActa({...acta, consignante: {...acta.consignante, ci: v}})} />
+                    <InputField label="Nombre y Apellido" value={acta.consignante.nombre} onChange={v => setActa({...acta, consignante: {...acta.consignante, nombre: v}})} />
+                    <InputField label="Cédula de Identidad" value={acta.consignante.ci} onChange={v => setActa({...acta, consignante: {...acta.consignante, ci: v}})} />
                   </div>
                 </FormCard>
                 <FormCard title="Detalles del Dispositivo Móvil" icon={<Smartphone size={16} />}>
                   <div className="grid grid-cols-2 gap-4 mb-4">
-                     <InputField label="Marca y Modelo" placeholder="Ej: Samsung Galaxy S22" value={acta.dispositivo.marcaModelo} onChange={v => setActa({...acta, dispositivo: {...acta.dispositivo, marcaModelo: v}})} />
-                     <InputField label="Número Telefónico" placeholder="Ej: +58 414 1234567" value={acta.dispositivo.numero} onChange={v => setActa({...acta, dispositivo: {...acta.dispositivo, numero: v}})} />
+                     <InputField label="Marca y Modelo" value={acta.dispositivo.marcaModelo} onChange={v => setActa({...acta, dispositivo: {...acta.dispositivo, marcaModelo: v}})} />
+                     <InputField label="Número Telefónico" value={acta.dispositivo.numero} onChange={v => setActa({...acta, dispositivo: {...acta.dispositivo, numero: v}})} />
                   </div>
-                  <InputField label="IMEI / IMEI2" placeholder="Ej: 358941230987123" fontMono className="mb-4" value={acta.dispositivo.imei} onChange={v => setActa({...acta, dispositivo: {...acta.dispositivo, imei: v}})} />
-                  <TextareaField label="Estado Físico (Batería, Daños, Pantalla)" placeholder="Ej: Pantalla intacta, puertos limpios, batería al 80%..." value={acta.dispositivo.estadoFisico} onChange={v => setActa({...acta, dispositivo: {...acta.dispositivo, estadoFisico: v}})} />
+                  <InputField label="IMEI / IMEI2" fontMono className="mb-4" value={acta.dispositivo.imei} onChange={v => setActa({...acta, dispositivo: {...acta.dispositivo, imei: v}})} />
+                  <TextareaField label="Estado Físico" value={acta.dispositivo.estadoFisico} onChange={v => setActa({...acta, dispositivo: {...acta.dispositivo, estadoFisico: v}})} />
                 </FormCard>
                 <FormCard title="Descripción y Observaciones M. Legal" icon={<FileText size={16} />}>
-                  <TextareaField label="Descripción de la actuación" placeholder="Ej: Se recibe de forma voluntaria dispositivo móvil..." value={acta.descripcion} onChange={v => setActa({...acta, descripcion: v})} className="mb-4" />
-                  <TextareaField label="Observaciones Finales" placeholder="Ej: Fijación fotográfica del estado del dispositivo..." value={acta.observaciones} onChange={v => setActa({...acta, observaciones: v})} />
+                  <TextareaField label="Descripción de la actuación" value={acta.descripcion} onChange={v => setActa({...acta, descripcion: v})} className="mb-4" />
+                  <TextareaField label="Observaciones Finales" value={acta.observaciones} onChange={v => setActa({...acta, observaciones: v})} />
                 </FormCard>
               </div>
             </div>

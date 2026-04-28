@@ -653,6 +653,12 @@ export const manualProcedimiento: ManualProcedimiento = {
       id: "HERR-002",
       uso: "Android Logs Events And Protobuf Parser",
       funcion: "Parseo de SQLite, Protobuf, reconstrucción de eventos WhatsApp",
+      caracteristicas: [
+        "Parseo de bases de datos SQLite",
+        "Reconstrucción de mensajes de WhatsApp",
+        "Generación de reportes HTML",
+        "Soporte para múltiples artefactos Android"
+      ],
       version_requerida: "Documentar versión exacta usada",
       artefactos_soportados: [
         "WhatsApp",

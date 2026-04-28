@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import { Book, FileText, Shield, Scale, Tool, Award, Info } from 'lucide-react';
+import { Book, FileText, Shield, Scale, Wrench, Award, Info } from 'lucide-react';
 import { 
   manualProcedimiento, 
   getFases, 
@@ -61,7 +61,7 @@ export default function ManualViewer({ onClose }: ManualViewerProps) {
             <SidebarButton 
               active={activeSection === 'herramientas'} 
               onClick={() => setActiveSection('herramientas')} 
-              icon={<Tool size={18} />} 
+              icon={<Wrench size={18} />} 
               label="Herramientas" 
             />
             <SidebarButton 
@@ -308,7 +308,7 @@ export default function ManualViewer({ onClose }: ManualViewerProps) {
                 <div key={herramienta.id} className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
                   <div className="bg-gradient-to-r from-[#0a1122] to-slate-800 px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <Tool className="text-amber-500" size={24} />
+                      <Wrench className="text-amber-500" size={24} />
                       <div>
                         <h3 className="text-lg font-bold text-white">{herramienta.uso.split(' ')[0]}</h3>
                         <p className="text-xs text-slate-300">{herramienta.id}</p>
