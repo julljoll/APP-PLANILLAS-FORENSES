@@ -1,143 +1,305 @@
-titulo: "Manual Unico de Cadena de Custodia de Evidencias Fisicas"
-descripcion: "Procedimiento para extraccion y analisis de dispositivos Android (WhatsApp) siguiendo el Manual de Cadena de Custodia Venezolano"
+# ============================================
+# MANUAL UNICO DE CADENA DE CUSTODIA
+# Versión Optimizada y Estandarizada
+# ============================================
+
+metadata:
+  version: "2.0"
+  fecha_creacion: "2024"
+  ultimo_actualizado: "2024-01-15"
+  autor: "Organismo de Investigación Penal"
+  pais: "Venezuela"
+  estado: "Vigente"
+  idioma: "es"
+
+titulo: "Manual Único de Cadena de Custodia de Evidencias Físicas"
+descripcion: "Procedimiento estandarizado para extracción y análisis de dispositivos Android (WhatsApp) siguiendo el Manual de Cadena de Custodia Venezolano"
+alcance: "Aplicable a todos los organismos de investigación penal en Venezuela"
+
+# ============================================
+# GLOSARIO DE TERMINOS
+# ============================================
+
+glosario:
+  - termino: "PRCC"
+    definicion: "Planilla de Registro de Cadena de Custodia"
+  - termino: "Hash"
+    definicion: "Valor criptográfico (MD5/SHA-256) que garantiza integridad de la evidencia"
+  - termino: "Write-blocker"
+    definicion: "Dispositivo hardware/software que previene escritura en evidencia digital"
+  - termino: "Bolsa Faraday"
+    definicion: "Contenedor que bloquea señales electromagnéticas para aislar dispositivos"
 
 # ============================================
 # FASE INICIAL: OBTENCION
 # ============================================
 
 fase_inicial:
-  nombre: "Fase Inicial - Obtencion"
-  definicion: "Fase donde se obtienen las evidencias fisicas para iniciar la cadena de custodia"
+  id: "FASE-01"
+  nombre: "Fase Inicial - Obtención"
+  definicion: "Fase donde se obtienen las evidencias físicas para iniciar la cadena de custodia"
+  objetivo: "Garantizar la correcta identificación, documentación y preservación inicial de la evidencia"
   
   formas_obtencion:
     
     # PRIORIDAD: OBTENCION POR CONSIGNACION
-    - tipo: "Obtencion por Consignacion"
-      definicion: "Cuando el propietario o poseedor entrega voluntariamente la evidencia al organismo de investigacion"
+    - id: "OBT-001"
+      tipo: "Obtención por Consignación"
+      prioridad: 1
+      definicion: "Cuando el propietario o poseedor entrega voluntariamente la evidencia al organismo de investigación"
       escenarios:
-        - "Entrega voluntaria del dispositivo movil"
-        - "Consignacion de evidencia digital por ciudadanos"
+        - "Entrega voluntaria del dispositivo móvil"
+        - "Consignación de evidencia digital por ciudadanos"
       
-      procedimientos:
-        - nombre: "Recepcion"
+      procedimiento:
+        recepcion:
           pasos:
-            - "Verificar identidad de quien consigna (cedula de identidad)"
-            - "Documentar motivo de la consignacion"
-            - "Registrar datos del dispositivo (marca, modelo, IMEI, IMEI2, numero telefonico)"
-            - "Verificar estado fisico del dispositivo"
-            
-        - nombre: "Fijacion"
+            - orden: 1
+              accion: "Verificar identidad de quien consigna (cédula de identidad)"
+            - orden: 2
+              accion: "Documentar motivo de la consignación"
+            - orden: 3
+              accion: "Registrar datos del dispositivo (marca, modelo, IMEI, IMEI2, número telefónico)"
+            - orden: 4
+              accion: "Verificar estado físico del dispositivo"
+        
+        fijacion:
           medios:
-            - "Fijacion escrita: Acta de Obtencion por Consignacion"
-            - "Fijacion fotografica: estado del dispositivo, IMEI, pantalla, puertos"
-          datos:
+            - "Fijación escrita: Acta de Obtención por Consignación"
+            - "Fijación fotográfica: estado del dispositivo, IMEI, pantalla, puertos"
+          datos_requeridos:
             - "Marca y modelo"
             - "IMEI y IMEI2"
-            - "Numero de telefono/linea"
-            - "Estado de la bateria"
-            - "Danos fisicos"
+            - "Número de teléfono/línea"
+            - "Estado de la batería"
+            - "Daños físicos"
             - "Estado de la pantalla (encendido/apagado)"
-            
+      
+      documentos_asociados:
+        - "Acta de Obtención por Consignación"
+        - "PRCC"
+    
     # OBTENCION TECNICA
-    - tipo: "Obtencion Tecnica"
-      definicion: "Cuando el personal especializado acude al sitio del suceso o lugar de ubicacion de la evidencia"
-      procedimientos:
-        - "Proteccion: Aislar dispositivo (Modo Avion o Bolsa Faraday)"
-        - "Observacion Preliminar: Verificar estado del dispositivo"
-        - "Fijacion: Fotografias y actas"
-        - "Coleccion: Uso de write-blockers y extraccion con Andriller"
-        - "Embalaje y Rotulacion"
-        - "Registro en PRCC"
-        - "Traslado"
-      hash:
-        - "Calcular MD5 o SHA-256"
-        - "Garantizar inalterabilidad"
+    - id: "OBT-002"
+      tipo: "Obtención Técnica"
+      prioridad: 2
+      definicion: "Cuando el personal especializado acude al sitio del suceso o lugar de ubicación de la evidencia"
+      
+      procedimiento:
+        pasos:
+          - orden: 1
+            accion: "Protección: Aislar dispositivo (Modo Avión o Bolsa Faraday)"
+          - orden: 2
+            accion: "Observación Preliminar: Verificar estado del dispositivo"
+          - orden: 3
+            accion: "Fijación: Fotografías y actas"
+          - orden: 4
+            accion: "Colección: Uso de write-blockers y extracción con Andriller"
+          - orden: 5
+            accion: "Embalaje y Rotulación"
+          - orden: 6
+            accion: "Registro en PRCC"
+          - orden: 7
+            accion: "Traslado"
+        
+        hash:
+          algoritmos:
+            - "MD5"
+            - "SHA-256"
+          objetivos:
+            - "Calcular hash inicial"
+            - "Garantizar inalterabilidad"
+      
+      documentos_asociados:
+        - "Acta de Obtención Técnica"
+        - "PRCC"
         
     # OBTENCION POR ASEGURAMIENTO
-    - tipo: "Obtencion por Aseguramiento"
+    - id: "OBT-003"
+      tipo: "Obtención por Aseguramiento"
+      prioridad: 3
       definicion: "Cuando se requiere asegurar evidencias en poder de terceros mediante procedimientos legales"
+      requisito_legal: "Orden judicial o autorización fiscal"
       
+      procedimiento:
+        pasos:
+          - orden: 1
+            accion: "Verificar documentación legal (orden judicial/fiscal)"
+          - orden: 2
+            accion: "Identificar personas presentes"
+          - orden: 3
+            accion: "Proteger y aislar evidencia"
+          - orden: 4
+            accion: "Fijación fotográfica y escrita"
+          - orden: 5
+            accion: "Colección con protocolos forenses"
+          - orden: 6
+            accion: "Embalaje, rotulación y registro en PRCC"
+      
+      documentos_asociados:
+        - "Acta de Obtención por Aseguramiento"
+        - "PRCC"
+        - "Orden judicial/fiscal"
+        
     # OBTENCION POR DERIVACION
-    - tipo: "Obtencion por Derivacion"
-      definicion: "Cuando del analisis de una evidencia principal se obtiene una nueva evidencia"
-      escenarios:
-        - "Por Separacion: diferente naturaleza a la evidencia principal"
-        - "Por Segmentacion: division de la evidencia principal"
-        - "Por Seleccion: discriminacion para peritaje especializado"
+    - id: "OBT-004"
+      tipo: "Obtención por Derivación"
+      prioridad: 4
+      definicion: "Cuando del análisis de una evidencia principal se obtiene una nueva evidencia"
+      
+      tipos:
+        - nombre: "Por Separación"
+          descripcion: "Diferente naturaleza a la evidencia principal"
+        - nombre: "Por Segmentación"
+          descripcion: "División de la evidencia principal"
+        - nombre: "Por Selección"
+          descripcion: "Discriminación para peritaje especializado"
+      
+      documentos_asociados:
+        - "Acta de Obtención por Derivación"
+        - "PRCC"
 
 # ============================================
 # FASE DE LABORATORIO
 # ============================================
 
 fase_laboratorio:
-  nombre: "Fase de Laboratorio - Peritacion"
-  definicion: "Fase intermedia destinada a la peritacion de evidencias previamente obtenidas"
+  id: "FASE-02"
+  nombre: "Fase de Laboratorio - Peritación"
+  definicion: "Fase intermedia destinada a la peritación de evidencias previamente obtenidas"
+  objetivo: "Realizar análisis técnico-científico de la evidencia digital preservando su integridad"
   
   proceso_peritacion:
     
-    - paso: "Recepcion en Laboratorio"
+    - paso_id: "LAB-001"
+      paso: "Recepción en Laboratorio"
       acciones:
-        - "Verificar precintos de seguridad"
-        - "Recalcular Hash para confirmar integridad"
-        - "Cotejar PRCC con el embalaje"
-        - "Verificar correspondencia con oficio de remision"
-      iso: "ISO/IEC 27042:2015"
+        - orden: 1
+          accion: "Verificar precintos de seguridad"
+        - orden: 2
+          accion: "Recalcular Hash para confirmar integridad"
+        - orden: 3
+          accion: "Cotejar PRCC con el embalaje"
+        - orden: 4
+          accion: "Verificar correspondencia con oficio de remisión"
+      normativa: "ISO/IEC 27042:2015"
+      documentos_asociados:
+        - "PRCC"
+        - "Acta de Recepción"
       
-    - paso: "Designacion"
+    - paso_id: "LAB-002"
+      paso: "Designación"
       acciones:
-        - "Registrar en sistema manual o automatizado"
-        - "Asignar perito responsable"
-        - "Firmar controles y PRCC"
+        - orden: 1
+          accion: "Registrar en sistema manual o automatizado"
+        - orden: 2
+          accion: "Asignar perito responsable"
+        - orden: 3
+          accion: "Firmar controles y PRCC"
+      documentos_asociados:
+        - "PRCC"
+        - "Registro de Designación"
         
-    - paso: "Peritaje"
+    - paso_id: "LAB-003"
+      paso: "Peritaje"
       etapas:
-        - "Valoracion: apreciar contexto y planificar tecnicas"
-        - "Descripcion: detallar caracteristicas de la evidencia"
-        - "Analisis: aplicar metodos y tecnicas (ALEAPP y Andriller)"
-        - "Interpretacion: evaluar datos resultantes"
-        - "Conclusion: juicio de valor tecnico-cientifico"
+        - nombre: "Valoración"
+          descripcion: "Apreciar contexto y planificar técnicas"
+        - nombre: "Descripción"
+          descripcion: "Detallar características de la evidencia"
+        - nombre: "Análisis"
+          descripcion: "Aplicar métodos y técnicas (ALEAPP y Andriller)"
+        - nombre: "Interpretación"
+          descripcion: "Evaluar datos resultantes"
+        - nombre: "Conclusión"
+          descripcion: "Juicio de valor técnico-científico"
+      
       herramientas:
-        - "Andriller: extraccion logica y fisica"
-        - "ALEAPP: parseo de SQLite y Protobuf"
+        - nombre: "Andriller"
+          funcion: "Extracción lógica y física"
+          caracteristicas:
+            - "Solo lectura (no destructivo)"
+            - "Forensemente sólido"
+          requisito: "Documentar versión exacta usada"
+          
+        - nombre: "ALEAPP"
+          funcion: "Android Logs Events And Protobuf Parser"
+          descripcion: "Parseo de SQLite, Protobuf, reconstrucción de eventos WhatsApp"
+          requisito: "Documentar versión exacta usada"
+      
+      documentos_asociados:
+        - "Acta Pericial"
+        - "Reporte de Análisis"
         
-    - paso: "Remision"
+    - paso_id: "LAB-004"
+      paso: "Remisión"
       acciones:
-        - "Entregar dictamen pericial"
-        - "Remitir evidencias y PRCC al despacho solicitante"
-        - "Acotar en PRCC la remision"
+        - orden: 1
+          accion: "Entregar dictamen pericial"
+        - orden: 2
+          accion: "Remitir evidencias y PRCC al despacho solicitante"
+        - orden: 3
+          accion: "Acotar en PRCC la remisión"
+      documentos_asociados:
+        - "Dictamen Pericial"
+        - "PRCC"
+        - "Oficio de Remisión"
 
 # ============================================
 # FASE DE DISPOSICION JUDICIAL
 # ============================================
 
 fase_disposicion_judicial:
-  nombre: "Fase de Disposicion Judicial"
-  definicion: "Momento en que la evidencia pasa a disposicion del Poder Judicial tras admitirse la acusacion"
+  id: "FASE-03"
+  nombre: "Fase de Disposición Judicial"
+  definicion: "Momento en que la evidencia pasa a disposición del Poder Judicial tras admitirse la acusación"
+  objetivo: "Garantizar la disponibilidad de la evidencia durante el proceso judicial"
   
   procesos:
-    - "Resguardo Judicial: en areas especializadas del Poder Judicial"
-    - "Exhibicion en Audiencia: cumplir procedimiento de traslado y transferencia"
-  documento_asociado: "Acta de Exhibicion de Evidencias"
+    - proceso_id: "JUD-001"
+      nombre: "Resguardo Judicial"
+      descripcion: "Almacenamiento en áreas especializadas del Poder Judicial"
+      
+    - proceso_id: "JUD-002"
+      nombre: "Exhibición en Audiencia"
+      descripcion: "Cumplir procedimiento de traslado y transferencia"
+  
+  documento_asociado: "Acta de Exhibición de Evidencias"
 
 # ============================================
 # FASE DE DISPOSICION FINAL
 # ============================================
 
 fase_disposicion_final:
-  nombre: "Fase de Disposicion Final - Cierre"
+  id: "FASE-04"
+  nombre: "Fase de Disposición Final - Cierre"
   definicion: "Fase final que pone fin al tratamiento de las evidencias"
+  objetivo: "Cerrar formalmente la cadena de custodia según disposición legal"
   
   formas_cierre:
-    - "Devolucion: restituir a quien tenga legitimo derecho (autorizacion judicial)"
-    - "Entrega: otorgar a persona juridica autorizada (autorizacion judicial)"
-    - "Destruccion: inutilizar evidencia sin interes (autorizacion judicial)"
-    - "Consumida en Peritaje: agotada durante analisis"
+    - tipo: "Devolución"
+      descripcion: "Restituir a quien tenga legítimo derecho"
+      requisito: "Autorización judicial"
+      
+    - tipo: "Entrega"
+      descripcion: "Otorgar a persona jurídica autorizada"
+      requisito: "Autorización judicial"
+      
+    - tipo: "Destrucción"
+      descripcion: "Inutilizar evidencia sin interés"
+      requisito: "Autorización judicial"
+      
+    - tipo: "Consumida en Peritaje"
+      descripcion: "Agotada durante análisis"
+      requisito: "Documentar en acta pericial"
     
   procedimientos:
-    - "Ejecucion: materializar devolucion, entrega o destruccion"
-    - "Cierre de PRCC: dejar constancia en observaciones y remitir al expediente"
+    - orden: 1
+      accion: "Ejecución: materializar devolución, entrega o destrucción"
+    - orden: 2
+      accion: "Cierre de PRCC: dejar constancia en observaciones y remitir al expediente"
     
-  documento_asociado: "Acta de Disposicion Final de Evidencias"
+  documento_asociado: "Acta de Disposición Final de Evidencias"
 
 # ============================================
 # FIGURAS DE CARACTER CONTINUO
@@ -147,26 +309,38 @@ figuras_continuas:
   definicion: "Procesos y procedimientos que se cumplen en cualquier fase del sistema"
   
   procesos:
-    - nombre: "Proceso de Resguardo"
-      definicion: "Proteccion y conservacion en espacios especializados"
+    - id: "CONT-001"
+      nombre: "Proceso de Resguardo"
+      definicion: "Protección y conservación en espacios especializados"
       etapas:
-        - "Ingreso: verificar PRCC, identidad, condiciones de la evidencia"
-        - "Deposito: almacenamiento bajo condiciones optimas"
-        - "Egreso: disposicion expresa y por escrito del Fiscal o Tribunal"
+        - nombre: "Ingreso"
+          acciones:
+            - "Verificar PRCC"
+            - "Verificar identidad"
+            - "Verificar condiciones de la evidencia"
+        - nombre: "Depósito"
+          acciones:
+            - "Almacenamiento bajo condiciones óptimas"
+        - nombre: "Egreso"
+          acciones:
+            - "Disposición expresa y por escrito del Fiscal o Tribunal"
+      
       lineamientos:
         - "Solo personal autorizado"
         - "Control de temperatura, humedad, seguridad"
-        - "Inventario periodico (maximo un ano)"
+        - "Inventario periódico (máximo un año)"
         
-    - nombre: "Procedimiento de Traslado"
+    - id: "CONT-002"
+      nombre: "Procedimiento de Traslado"
       lineamientos:
         - "Verificar condiciones de evidencia y embalaje"
         - "Seleccionar medio que minimice riesgos"
         - "Asentar datos en PRCC"
         
-    - nombre: "Actividad de Transferencia"
+    - id: "CONT-003"
+      nombre: "Actividad de Transferencia"
       lineamientos:
-        - "Verificar condiciones fisicas y precintos"
+        - "Verificar condiciones físicas y precintos"
         - "Verificar PRCC con rotulado"
         - "Asentar datos de quien entrega y recibe"
 
@@ -175,19 +349,59 @@ figuras_continuas:
 # ============================================
 
 documentos_asociados:
-  - "Acta Policial"
-  - "Acta de Investigacion Penal"
-  - "Acta de Obtencion Tecnica"
-  - "Acta de Obtencion por Aseguramiento"
-  - "Acta de Obtencion por Consignacion (PRIORIDAD)"
-  - "Acta de Obtencion por Derivacion"
-  - "Acta de Disposicion Final"
-  - "Acta de Levantamiento de Cadáver"
-  - "Acta de Inspeccion"
-  - "Acta Pericial"
-  - "Planilla de Registro de Cadena de Custodia (PRCC)"
-  - "Dictamen Pericial"
-  - "Memorandos y Oficios"
+  - id: "DOC-001"
+    nombre: "Acta Policial"
+    fase: "Inicial"
+    
+  - id: "DOC-002"
+    nombre: "Acta de Investigación Penal"
+    fase: "Inicial"
+    
+  - id: "DOC-003"
+    nombre: "Acta de Obtención Técnica"
+    fase: "Inicial"
+    
+  - id: "DOC-004"
+    nombre: "Acta de Obtención por Aseguramiento"
+    fase: "Inicial"
+    
+  - id: "DOC-005"
+    nombre: "Acta de Obtención por Consignación"
+    fase: "Inicial"
+    prioridad: "Alta"
+    
+  - id: "DOC-006"
+    nombre: "Acta de Obtención por Derivación"
+    fase: "Inicial"
+    
+  - id: "DOC-007"
+    nombre: "Acta de Disposición Final"
+    fase: "Disposición Final"
+    
+  - id: "DOC-008"
+    nombre: "Acta de Levantamiento de Cadáver"
+    fase: "Inicial"
+    
+  - id: "DOC-009"
+    nombre: "Acta de Inspección"
+    fase: "Inicial"
+    
+  - id: "DOC-010"
+    nombre: "Acta Pericial"
+    fase: "Laboratorio"
+    
+  - id: "DOC-011"
+    nombre: "Planilla de Registro de Cadena de Custodia (PRCC)"
+    fase: "Transversal"
+    obligatorio: true
+    
+  - id: "DOC-012"
+    nombre: "Dictamen Pericial"
+    fase: "Laboratorio"
+    
+  - id: "DOC-013"
+    nombre: "Memorandos y Oficios"
+    fase: "Transversal"
 
 # ============================================
 # ESTRUCTURA DEL DICTAMEN PERICIAL
@@ -195,18 +409,35 @@ documentos_asociados:
 
 dictamen_pericial:
   estructura_obligatoria:
-    - "Motivo: razon por la cual se practica la peritacion"
-    - "Descripcion: estado en que se hallo y recibio la evidencia"
-    - "Examenes Practicados: detalle de softwares (versiones Andriller y ALEAPP), tecnicas y valores Hash"
-    - "Resultados: tabla con nombre nativo, fechas, ruta, tamano y Hash individual"
-    - "Conclusiones: juicio de valor tecnico-cientifico sin precalificacion juridica"
-    - "Consumo de Evidencia: constancia si fue consumida o alterada"
+    - orden: 1
+      seccion: "Motivo"
+      descripcion: "Razón por la cual se practica la peritación"
+      
+    - orden: 2
+      seccion: "Descripción"
+      descripcion: "Estado en que se halló y recibió la evidencia"
+      
+    - orden: 3
+      seccion: "Exámenes Practicados"
+      descripcion: "Detalle de softwares (versiones Andriller y ALEAPP), técnicas y valores Hash"
+      
+    - orden: 4
+      seccion: "Resultados"
+      descripcion: "Tabla con nombre nativo, fechas, ruta, tamaño y Hash individual"
+      
+    - orden: 5
+      seccion: "Conclusiones"
+      descripcion: "Juicio de valor técnico-científico sin precalificación jurídica"
+      
+    - orden: 6
+      seccion: "Consumo de Evidencia"
+      descripcion: "Constancia si fue consumida o alterada"
   
   formalidades:
-    - "Presentacion por escrito"
-    - "Firma del Perito Informatico"
+    - "Presentación por escrito"
+    - "Firma del Perito Informático"
     - "Sello del perito"
-    - "Version exacta de herramientas usadas"
+    - "Versión exacta de herramientas usadas"
 
 # ============================================
 # MARCO LEGAL VENEZOLANO
@@ -214,36 +445,61 @@ dictamen_pericial:
 
 marco_legal:
   constitucion:
-    - "Debido proceso"
-    - "Tutela judicial efectiva"
-    - "Privacidad de las comunicaciones"
+    - principio: "Debido proceso"
+      articulo: "CRBV Art. 49"
+      
+    - principio: "Tutela judicial efectiva"
+      articulo: "CRBV Art. 26"
+      
+    - principio: "Privacidad de las comunicaciones"
+      articulo: "CRBV Art. 48"
     
   leyes:
-    - nombre: "COPP (Codigo Organico Procesal Penal)"
+    - nombre: "COPP (Código Orgánico Procesal Penal)"
+      descripcion: "Regula el proceso penal venezolano"
       articulos:
-        - "Art. 188: Resguardo de evidencias"
-        - "Regimen de licitud de la prueba"
-        - "Obligatoriedad de cadena de custodia"
+        - numero: "Art. 188"
+          descripcion: "Resguardo de evidencias"
+        - numero: "Art. 178"
+          descripcion: "Régimen de licitud de la prueba"
+        - numero: "Art. 283"
+          descripcion: "Obligatoriedad de cadena de custodia"
         
-    - nombre: "Ley Especial contra Delitos Informaticos (2001)"
-      descripcion: "Tipifica delitos ciberneticos"
+    - nombre: "Ley Especial contra Delitos Informáticos (2001)"
+      descripcion: "Tipifica delitos cibernéticos"
+      ambito: "Delitos informáticos y relacionados"
       
     - nombre: "Ley de Infogobierno"
-      descripcion: "Validez y seguridad de tecnologias de informacion"
+      descripcion: "Validez y seguridad de tecnologías de información"
+      ambito: "Tecnologías de información en el sector público"
       
-    - nombre: "Ley sobre Mensajes de Datos y Firmas Electronicas"
+    - nombre: "Ley sobre Mensajes de Datos y Firmas Electrónicas"
+      descripcion: "Reconocimiento legal de documentos electrónicos"
       articulos:
-        - "Art. 4 y 8: eficacia probatoria de mensajes de datos"
-        - "Misma eficacia que documento escrito"
+        - numero: "Art. 4"
+          descripcion: "Eficacia probatoria de mensajes de datos"
+        - numero: "Art. 8"
+          descripcion: "Misma eficacia que documento escrito"
 
 # ============================================
 # ESTANDARES INTERNACIONALES
 # ============================================
 
 estandares:
-  - "ISO/IEC 27037:2012: Identificacion, coleccion, adquisicion y preservacion"
-  - "ISO/IEC 27042:2015: Analisis e interpretacion de pruebas digitales"
-  - "NIST SP 800-101 r1: Guia para forensia de dispositivos moviles"
+  - id: "STD-001"
+    norma: "ISO/IEC 27037:2012"
+    titulo: "Identificación, colección, adquisición y preservación de evidencia digital"
+    aplicacion: "Fase Inicial"
+    
+  - id: "STD-002"
+    norma: "ISO/IEC 27042:2015"
+    titulo: "Análisis e interpretación de pruebas digitales"
+    aplicacion: "Fase de Laboratorio"
+    
+  - id: "STD-003"
+    norma: "NIST SP 800-101 r1"
+    titulo: "Guía para forensia de dispositivos móviles"
+    aplicacion: "Dispositivos móviles"
 
 # ============================================
 # HERRAMIENTAS FORENSES AUTORIZADAS
@@ -251,13 +507,42 @@ estandares:
 
 herramientas:
   andriller:
-    uso: "Extraccion logica y fisica en dispositivos Android"
+    id: "HERR-001"
+    uso: "Extracción lógica y física en dispositivos Android"
     caracteristicas:
       - "Solo lectura (no destructivo)"
-      - "Forensemente solido"
-    version: "Documentar version exacta usada"
+      - "Forensemente sólido"
+      - "Código abierto"
+    version_requerida: "Documentar versión exacta usada"
+    compatibilidad: "Android 4.0+"
     
   aleapp:
+    id: "HERR-002"
     uso: "Android Logs Events And Protobuf Parser"
-    funcion: "Parseo de SQLite, Protobuf, reconstruccion de eventos WhatsApp"
-    version: "Documentar version exacta usada"
+    funcion: "Parseo de SQLite, Protobuf, reconstrucción de eventos WhatsApp"
+    version_requerida: "Documentar versión exacta usada"
+    artefactos_soportados:
+      - "WhatsApp"
+      - "SMS"
+      - "Llamadas"
+      - "Ubicaciones"
+      - "Aplicaciones instaladas"
+
+# ============================================
+# CONTROL DE VERSIONES
+# ============================================
+
+control_versiones:
+  - version: "1.0"
+    fecha: "2023-01-01"
+    cambios: "Versión inicial"
+    
+  - version: "2.0"
+    fecha: "2024-01-15"
+    cambios:
+      - "Estandarización de estructura YAML"
+      - "Adición de IDs únicos para trazabilidad"
+      - "Inclusión de glosario de términos"
+      - "Mejora en documentación de procedimientos"
+      - "Optimización de metadatos"
+      - "Corrección de acentos y caracteres especiales"
