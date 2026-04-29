@@ -441,6 +441,15 @@ export default function App() {
                       </table>
                     </div>
                   </FormCard>
+
+                  <FormCard title="Flujo de Investigación (Estilo Kanvas)" icon={<History size={16} />}>
+                    <div className="pl-2 mt-4">
+                      <TimelineItem date="29 ABR 2024 - 09:15" activity="Obtención por Consignación (Evidencia Inicial)" performer="Insp. Juan Pérez" status="completed" />
+                      <TimelineItem date="29 ABR 2024 - 11:30" activity="Ingreso a Laboratorio y Asignación" performer="Ing. Forense Maria G." status="completed" />
+                      <TimelineItem date="EN CURSO" activity="Peritación Forense (Extracción con Andriller)" performer="Ing. Forense Maria G." status="current" />
+                      <TimelineItem date="PENDIENTE" activity="Generación de Dictamen y Remisión" performer="TBD" status="pending" last />
+                    </div>
+                  </FormCard>
                 </div>
 
                 <div className="space-y-6">
@@ -666,6 +675,23 @@ const SidebarButton = memo(({ active, icon, label, onClick }: any) => {
     </button>
   );
 });
+
+const TimelineItem = memo(({ status, date, activity, performer, last }: any) => (
+  <div className="flex gap-4 relative">
+    {!last && <div className="absolute left-[9px] top-7 bottom-0 w-0.5 bg-slate-200" />}
+    <div className={`w-5 h-5 rounded-full mt-1.5 shrink-0 z-10 flex items-center justify-center ${
+      status === 'completed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 
+      status === 'current' ? 'bg-amber-500 animate-pulse' : 'bg-slate-300'
+    }`}>
+      <div className="w-2 h-2 bg-white rounded-full" />
+    </div>
+    <div className="pb-8">
+      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{date}</p>
+      <h4 className="text-sm font-bold text-slate-800 leading-tight">{activity}</h4>
+      <p className="text-xs text-slate-500 mt-1">Responsable: <span className="font-semibold text-slate-700">{performer}</span></p>
+    </div>
+  </div>
+));
 
 const FormCard = memo(({ title, icon, action, children }: any) => {
   return (
