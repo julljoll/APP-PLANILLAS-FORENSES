@@ -124,7 +124,7 @@ declare global {
 }
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'gestor-prcc' | 'acta' | 'prcc' | 'dictamen' | 'manual'>('gestor-prcc');
+  const [activeTab, setActiveTab] = useState<'gestor-prcc' | 'acta' | 'prcc' | 'dictamen' | 'manual' | 'seguimiento'>('gestor-prcc');
   const [report, setReport] = useState<ReportData>(initialReport);
   const [prcc, setPrcc] = useState<PRCCData>(initialPRCC);
   const [acta, setActa] = useState<ActaData>(initialActa);
@@ -259,6 +259,7 @@ export default function App() {
             <SidebarButton active={activeTab === 'acta'} onClick={() => setActiveTab('acta')} icon={<PenTool size={18} />} label="Acta Consignación" />
             <SidebarButton active={activeTab === 'prcc'} onClick={() => setActiveTab('prcc')} icon={<LayoutTemplate size={18} />} label="Planilla PRCC" />
             <SidebarButton active={activeTab === 'dictamen'} onClick={() => setActiveTab('dictamen')} icon={<FileText size={18} />} label="Dictamen Pericial" />
+            <SidebarButton active={activeTab === 'seguimiento'} onClick={() => setActiveTab('seguimiento')} icon={<ClipboardList size={18} />} label="Seguimiento de Cadena" />
             <div className="h-4" />
             <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2 pl-3">Ayuda</h3>
             <SidebarButton active={activeTab === 'manual'} onClick={() => setActiveTab('manual')} icon={<BookOpen size={18} />} label="Manual de Usuario" />
@@ -300,16 +301,15 @@ export default function App() {
               {activeTab === 'dictamen' && 'Dictamen Pericial de Extracción'}
               {activeTab === 'prcc' && 'Planilla de Registro de Cadena de Custodia (PRCC)'}
               {activeTab === 'acta' && 'Acta de Obtención por Consignación'}
+              {activeTab === 'seguimiento' && 'Seguimiento y Auditoría de Evidencia'}
             </h2>
             <div className="h-1 w-20 bg-amber-500 mb-4 rounded-full" />
             <p className="text-sm text-slate-500 max-w-2xl leading-relaxed">
               {activeTab === 'gestor-prcc' 
                 ? 'Administre la generación de planillas iniciales y derivadas con firma electrónica SHA-256.'
+                : activeTab === 'seguimiento'
+                ? 'Monitoree el ciclo de vida, ubicación física e integridad de cada dispositivo móvil bajo custodia.'
                 : 'Complete los campos a continuación para generar el documento oficial bajo el marco procesal penal.'}
-            </p>
-          </div>
-
-          {/* GESTOR PRCC (NUEVA IDEA) */}
           {activeTab === 'gestor-prcc' && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="space-y-6">
@@ -388,6 +388,86 @@ export default function App() {
                   )}
                 </FormCard>
               </div>
+            </div>
+          )}
+
+          {/* SEGUIMIENTO DE CADENA */}
+          {activeTab === 'seguimiento' && (
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <StatsCard title="Evidencias en Resguardo" value="12" subValue="+2 esta semana" color="amber" />
+                <StatsCard title="En Análisis Forense" value="4" subValue="3 urgentes" color="blue" />
+                <StatsCard title="Alertas de Integridad" value="0" subValue="Todo verificado" color="emerald" />
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 space-y-6">
+                  <FormCard title="Panel de Seguimiento" icon={<Smartphone size={16} />}>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm text-left">
+                        <thead className="text-[10px] font-bold uppercase text-slate-400 border-b border-slate-100">
+                          <tr>
+                            <th className="py-3 px-2">Evidencia ID</th>
+                            <th className="py-3 px-2">Estado Actual</th>
+                            <th className="py-3 px-2">Ubicación Física</th>
+                            <th className="py-3 px-2">Último Evento</th>
+                            <th className="py-3 px-2 text-right">Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-50">
+                          <tr className="hover:bg-slate-50 transition-colors">
+                            <td className="py-4 px-2 font-mono text-xs">VEN-20240429-001</td>
+                            <td className="py-4 px-2">
+                              <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold">EN ANÁLISIS</span>
+                            </td>
+                            <td className="py-4 px-2 text-slate-600">Lab. Estante A-12</td>
+                            <td className="py-4 px-2 text-[10px] text-slate-400">Extracción de datos (hace 2h)</td>
+                            <td className="py-4 px-2 text-right">
+                              <button className="text-amber-600 hover:text-amber-700 font-bold text-[10px] uppercase">Detalle</button>
+                            </td>
+                          </tr>
+                          <tr className="hover:bg-slate-50 transition-colors">
+                            <td className="py-4 px-2 font-mono text-xs">VEN-20240428-042</td>
+                            <td className="py-4 px-2">
+                              <span className="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-[10px] font-bold">RESGUARDO</span>
+                            </td>
+                            <td className="py-4 px-2 text-slate-600">Bóveda 2 - Fila 4</td>
+                            <td className="py-4 px-2 text-[10px] text-slate-400">Ingreso a depósito (hace 1d)</td>
+                            <td className="py-4 px-2 text-right">
+                              <button className="text-amber-600 hover:text-amber-700 font-bold text-[10px] uppercase">Detalle</button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </FormCard>
+                </div>
+
+                <div className="space-y-6">
+                  <FormCard title="Registrar Evento" icon={<Plus size={16} />}>
+                    <div className="space-y-4">
+                      <InputField label="ID de Evidencia" placeholder="VEN-YYYYMMDD-XXX" />
+                      <div>
+                        <label className="block text-[11px] font-bold tracking-wider uppercase text-slate-500 mb-1.5">Tipo de Evento</label>
+                        <select className="w-full text-sm bg-slate-50 border border-slate-200 rounded-md py-2.5 px-3 focus:bg-white focus:border-amber-500 outline-none">
+                          <option>Cambio Ubicación Interna</option>
+                          <option>Inspección Ocular</option>
+                          <option>Re-sellado de Seguridad</option>
+                          <option>Verificación de Hash</option>
+                        </select>
+                      </div>
+                      <InputField label="Nueva Ubicación" placeholder="Ej: Gaveta 4" />
+                      <TextareaField label="Observaciones" placeholder="Detalle del hallazgo o motivo..." />
+                      <button className="w-full bg-slate-800 text-white py-3 rounded-md font-bold text-sm shadow-md hover:bg-slate-700 transition-all uppercase tracking-widest">
+                        Registrar Movimiento
+                      </button>
+                    </div>
+                  </FormCard>
+                </div>
+              </div>
+            </div>
+          )}
+  </div>
             </div>
           )}
 
