@@ -313,6 +313,9 @@ export default function App() {
                 : activeTab === 'seguimiento'
                 ? 'Monitoree el ciclo de vida, ubicación física e integridad de cada dispositivo móvil bajo custodia.'
                 : 'Complete los campos a continuación para generar el documento oficial bajo el marco procesal penal.'}
+            </p>
+          </div>
+
           {activeTab === 'gestor-prcc' && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="space-y-6">
@@ -396,10 +399,6 @@ export default function App() {
 
           {/* SEGUIMIENTO DE CADENA */}
           {activeTab === 'seguimiento' && <ForensicDashboard />}
-
-  </div>
-            </div>
-          )}
 
           {/* EXISTING MODULES */}
           {activeTab === 'dictamen' && (
@@ -646,11 +645,8 @@ const TextareaField = memo(({ label, value, onChange, className = '', placeholde
       <label className="block text-[11px] font-bold tracking-wider uppercase text-slate-500 mb-1.5">{label}</label>
       <textarea 
         className="w-full text-sm bg-slate-50 border border-slate-200 rounded-md py-2.5 px-3 focus:bg-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 hover:border-slate-300 outline-none h-24 resize-none transition-all text-slate-800"
-       ed decoration-slate-300 underline-offset-4 font-serif bg-slate-50">
-               {acta.observaciones}
-            </div>
-         </div>
-       </div>
+        value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)}
+      />
     </div>
   )
 });
