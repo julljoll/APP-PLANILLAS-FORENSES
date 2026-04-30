@@ -107,6 +107,23 @@ ipcMain.handle('print-to-pdf', async (event, { html, filename }) => {
   return { ok: false, error: 'Cancelled' };
 });
 
+ipcMain.handle('open-html-file', async (event, filename) => {
+  const filePath = path.join(__dirname, filename);
+  const win = new BrowserWindow({
+    width: 1000,
+    height: 900,
+    title: `Visualizador de Plantilla - ${filename}`,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true
+    }
+  });
+  
+  win.loadFile(filePath);
+  win.setMenuBarVisibility(false);
+  return { ok: true };
+});
+
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {

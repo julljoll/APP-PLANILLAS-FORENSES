@@ -122,6 +122,7 @@ declare global {
       generarPRCC: (data: any) => Promise<any>;
       buscarPorCedula: (cedula: string) => Promise<any>;
       printToPDF: (data: any) => Promise<any>;
+      openHTMLFile: (filename: string) => Promise<any>;
     };
   }
 }
@@ -229,6 +230,14 @@ export default function App() {
         html: record.html_generado,
         filename: `PRCC_${record.hash.substring(0, 8)}.pdf`
       });
+    }
+  };
+
+  const handleOpenTemplate = async (filename: string) => {
+    if (window.electronAPI?.openHTMLFile) {
+      await window.electronAPI.openHTMLFile(filename);
+    } else {
+      alert('Esta función solo está disponible en la versión de escritorio');
     }
   };
 
@@ -358,6 +367,16 @@ export default function App() {
                     Generar Planilla Derivada
                   </button>
                 </FormCard>
+
+                <FormCard title="Plantilla Legal (HTML)" icon={<LayoutTemplate size={16} />}>
+                  <p className="text-[11px] text-slate-500 mb-4">Visualice la estructura legal base de la planilla de derivación antes de generarla.</p>
+                  <button 
+                    onClick={() => handleOpenTemplate('planilla_prcc_derivacion.html')}
+                    className="w-full flex items-center justify-center gap-2 border border-slate-300 text-slate-700 py-2.5 rounded-md font-bold text-xs hover:bg-slate-50 transition-all uppercase tracking-wider"
+                  >
+                    <LayoutTemplate size={14} /> Ver Plantilla PRCC Derivación
+                  </button>
+                </FormCard>
               </div>
 
               <div className="space-y-6">
@@ -398,7 +417,25 @@ export default function App() {
           )}
 
           {/* SEGUIMIENTO DE CADENA */}
-          {activeTab === 'seguimiento' && <ForensicDashboard />}
+          {activeTab === 'seguimiento' && (
+            <div className="space-y-8">
+              <div className="bg-amber-50 border border-amber-200 p-6 rounded-xl flex items-center justify-between shadow-sm">
+                <div>
+                  <h3 className="text-sm font-bold text-amber-800 uppercase tracking-wide flex items-center gap-2">
+                    <BookOpen size={18} /> Protocolo Forense Interactivo (HTML)
+                  </h3>
+                  <p className="text-xs text-amber-700 mt-1">Acceda a la guía paso a paso con "Cero Riesgo de Nulidad" para el procesamiento de evidencias.</p>
+                </div>
+                <button 
+                  onClick={() => handleOpenTemplate('seguimiento.html')}
+                  className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all shadow-md"
+                >
+                  Ver Protocolo Completo
+                </button>
+              </div>
+              <ForensicDashboard />
+            </div>
+          )}
 
           {/* EXISTING MODULES */}
           {activeTab === 'dictamen' && (
@@ -516,6 +553,16 @@ export default function App() {
 
                  <TextareaField label="Observaciones (Ej. Integridad de los precintos)" value={prcc.observaciones} onChange={v => setPrcc({...prcc, observaciones: v})} />
                </FormCard>
+
+                <FormCard title="Plantilla Legal (HTML)" icon={<LayoutTemplate size={16} />}>
+                  <p className="text-[11px] text-slate-500 mb-4">Acceda al formato oficial HTML de la Planilla de Registro de Cadena de Custodia.</p>
+                  <button 
+                    onClick={() => handleOpenTemplate('planilla_prcc_derivacion.html')}
+                    className="w-full flex items-center justify-center gap-2 border border-slate-300 text-slate-700 py-2.5 rounded-md font-bold text-xs hover:bg-slate-50 transition-all uppercase tracking-wider"
+                  >
+                    <LayoutTemplate size={14} /> Abrir Formato Legal PRCC
+                  </button>
+                </FormCard>
              </div>
            </div>
           )}
@@ -569,6 +616,16 @@ export default function App() {
                 <FormCard title="Descripción y Observaciones M. Legal" icon={<FileText size={16} />}>
                   <TextareaField label="Descripción de la actuación" value={acta.descripcion} onChange={v => setActa({...acta, descripcion: v})} className="mb-4" />
                   <TextareaField label="Observaciones Finales" value={acta.observaciones} onChange={v => setActa({...acta, observaciones: v})} />
+                </FormCard>
+
+                <FormCard title="Plantilla Legal (HTML)" icon={<LayoutTemplate size={16} />}>
+                  <p className="text-[11px] text-slate-500 mb-4">Visualice el Acta de Obtención por Consignación original en formato HTML.</p>
+                  <button 
+                    onClick={() => handleOpenTemplate('acta_obtencion_consignacion.html')}
+                    className="w-full flex items-center justify-center gap-2 border border-slate-300 text-slate-700 py-2.5 rounded-md font-bold text-xs hover:bg-slate-50 transition-all uppercase tracking-wider"
+                  >
+                    <LayoutTemplate size={14} /> Abrir Acta de Consignación
+                  </button>
                 </FormCard>
               </div>
             </div>
