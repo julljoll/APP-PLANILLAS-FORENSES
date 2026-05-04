@@ -31,111 +31,83 @@ export default function ManualViewer({ onClose }: ManualViewerProps) {
   const glosario = getGlosario();
 
   return (
-    <div className="flex h-screen w-full bg-[#fcfcfd] font-sans text-slate-900 overflow-hidden">
-      {/* Sidebar */}
-      <div className="hidden md:flex w-72 bg-[#0a1122] flex-col shrink-0 shadow-2xl">
-        <div className="p-8 pb-4">
-          <div className="flex items-center gap-3 mb-2">
-            <img src="./favicon.svg" alt="SHA256.US Logo" className="w-9 h-9" />
-            <div>
-              <h1 className="font-serif font-bold text-2xl tracking-widest text-white">MANUAL v{manualProcedimiento.metadata.version}</h1>
-            </div>
+    <div className="flex h-screen w-full bg-[#F5F5F5] font-sans text-[#1A1A1A] overflow-hidden">
+      {/* Sidebar — Fluent Dark */}
+      <aside className="hidden md:flex w-64 fluent-sidebar flex-col shrink-0">
+        <div className="px-5 pt-6 pb-2">
+          <div className="flex items-center gap-2.5 mb-1">
+            <img src="./favicon.svg" alt="SHA256.US" className="w-8 h-8" />
+            <h1 className="font-bold text-[16px] tracking-wider text-white">Manual v{manualProcedimiento.metadata.version}</h1>
           </div>
-          <p className="text-[10px] uppercase font-semibold tracking-widest text-amber-500/80 mb-10 leading-relaxed max-w-[200px]">
-            Cadena de Custodia Forense
+          <p className="text-[9px] uppercase font-medium tracking-[0.15em] text-[#9E9E9E] leading-relaxed pl-[42px]">
+            Cadena de Custodia
           </p>
-
-          <nav className="flex flex-col gap-1.5">
-            <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2 pl-3">Secciones</h3>
-            <SidebarButton 
-              active={activeSection === 'fases'} 
-              onClick={() => setActiveSection('fases')} 
-              icon={<Book size={18} />} 
-              label="Fases del Proceso" 
-            />
-            <SidebarButton 
-              active={activeSection === 'glosario'} 
-              onClick={() => setActiveSection('glosario')} 
-              icon={<Info size={18} />} 
-              label="Glosario" 
-            />
-            <SidebarButton 
-              active={activeSection === 'herramientas'} 
-              onClick={() => setActiveSection('herramientas')} 
-              icon={<Wrench size={18} />} 
-              label="Herramientas" 
-            />
-            <SidebarButton 
-              active={activeSection === 'legal'} 
-              onClick={() => setActiveSection('legal')} 
-              icon={<Scale size={18} />} 
-              label="Marco Legal" 
-            />
-            <SidebarButton 
-              active={activeSection === 'estandares'} 
-              onClick={() => setActiveSection('estandares')} 
-              icon={<Award size={18} />} 
-              label="Estándares" 
-            />
-          </nav>
         </div>
-        
-        <div className="mt-auto p-8 border-t border-slate-800/50">
-          <button 
-            onClick={onClose}
-            className="w-full flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white px-4 py-3 rounded-md text-sm font-semibold transition-all shadow-[0_4px_14px_0_rgba(217,119,6,0.39)]"
-          >
-            <FileText size={18} /> <span>Volver a la Aplicación</span>
+
+        <nav className="flex-1 px-3 pt-6 space-y-0.5 overflow-y-auto">
+          <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#616161] mb-2 px-3">Secciones</p>
+          <SidebarButton active={activeSection === 'fases'} onClick={() => setActiveSection('fases')} icon={<Book size={16} />} label="Fases del Proceso" />
+          <SidebarButton active={activeSection === 'glosario'} onClick={() => setActiveSection('glosario')} icon={<Info size={16} />} label="Glosario" />
+          <SidebarButton active={activeSection === 'herramientas'} onClick={() => setActiveSection('herramientas')} icon={<Wrench size={16} />} label="Herramientas" />
+          <SidebarButton active={activeSection === 'legal'} onClick={() => setActiveSection('legal')} icon={<Scale size={16} />} label="Marco Legal" />
+          <SidebarButton active={activeSection === 'estandares'} onClick={() => setActiveSection('estandares')} icon={<Award size={16} />} label="Estándares" />
+        </nav>
+
+        <div className="px-3 pb-4">
+          <button onClick={onClose} className="w-full flex items-center justify-center gap-2 bg-[#0078D4] hover:bg-[#106EBE] text-white px-4 py-2.5 rounded-md text-[13px] font-semibold transition-all">
+            <FileText size={15} /> Volver a la Aplicación
           </button>
         </div>
-      </div>
+      </aside>
 
       {/* Content Area */}
       <div className="flex-1 overflow-y-auto pb-20 md:pb-0">
-        <div className="max-w-6xl mx-auto p-6 md:p-12 lg:p-16">
+        <div className="max-w-6xl mx-auto px-6 py-8 md:px-10 md:py-10">
           
-          <header className="mb-10 block md:hidden">
-            <div className="flex items-center gap-3">
-              <img src="./favicon.svg" alt="SHA256.US Logo" className="w-7 h-7" />
-              <h1 className="font-serif font-bold text-xl tracking-widest text-[#0a1122]">MANUAL v{manualProcedimiento.metadata.version}</h1>
+          <header className="mb-8 block md:hidden">
+            <div className="flex items-center gap-2.5">
+              <img src="./favicon.svg" alt="SHA256.US" className="w-7 h-7" />
+              <h1 className="font-bold text-[16px] tracking-wider text-[#1A1A1A]">Manual v{manualProcedimiento.metadata.version}</h1>
             </div>
           </header>
 
-          <div className="mb-12">
-            <h2 className="text-3xl md:text-4xl font-serif font-medium text-[#0a1122] tracking-tight mb-2">
+          <div className="mb-8">
+            <h2 className="text-[22px] md:text-[26px] font-bold text-[#1A1A1A] tracking-tight leading-tight mb-1">
               {manualProcedimiento.titulo}
             </h2>
-            <div className="h-1 w-20 bg-amber-500 mb-4 rounded-full" />
-            <p className="text-sm text-slate-500 max-w-2xl leading-relaxed mb-2">
-              {manualProcedimiento.descripcion}
-            </p>
-            <div className="flex gap-4 text-xs text-slate-400">
-              <span>Última actualización: {manualProcedimiento.metadata.ultimo_actualizado}</span>
-              <span>•</span>
+            <div className="flex items-center gap-3 mt-2 mb-3">
+              <div className="w-8 h-[3px] bg-[#0078D4] rounded-full" />
+              <p className="text-[13px] text-[#616161] leading-relaxed">
+                {manualProcedimiento.descripcion}
+              </p>
+            </div>
+            <div className="flex gap-4 text-[11px] text-[#9E9E9E]">
+              <span>Actualización: {manualProcedimiento.metadata.ultimo_actualizado}</span>
+              <span>·</span>
               <span>Autor: {manualProcedimiento.metadata.autor}</span>
-              <span>•</span>
+              <span>·</span>
               <span>Estado: {manualProcedimiento.metadata.estado}</span>
             </div>
           </div>
 
           {/* Fases Section */}
           {activeSection === 'fases' && (
-            <div className="space-y-12">
+            <div className="space-y-8">
               {fases.map((fase, idx) => (
-                <section key={fase.id} className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-                  <div className="bg-gradient-to-r from-[#0a1122] to-slate-800 px-6 py-4">
+                <section key={fase.id} className="fluent-card overflow-hidden">
+                  <div className="bg-[#1B1B1F] px-5 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-amber-500 text-white font-bold text-sm">
+                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[#0078D4] text-white font-bold text-[12px]">
                         {idx + 1}
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold text-white">{fase.nombre}</h3>
-                        <p className="text-xs text-slate-300">{fase.definicion}</p>
+                        <h3 className="text-[15px] font-bold text-white">{fase.nombre}</h3>
+                        <p className="text-[11px] text-[#9E9E9E]">{fase.definicion}</p>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="p-6">
+                  <div className="p-5">
                     <div className="mb-4 p-4 bg-amber-50 border-l-4 border-amber-500 rounded-r">
                       <p className="text-sm font-semibold text-amber-900">Objetivo:</p>
                       <p className="text-sm text-amber-800 mt-1">{fase.objetivo}</p>
@@ -285,8 +257,8 @@ export default function ManualViewer({ onClose }: ManualViewerProps) {
 
           {/* Glosario Section */}
           {activeSection === 'glosario' && (
-            <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-              <div className="bg-gradient-to-r from-[#0a1122] to-slate-800 px-6 py-4">
+            <div className="fluent-card overflow-hidden">
+              <div className="bg-[#1B1B1F] px-5 py-4">
                 <h3 className="text-lg font-bold text-white">Glosario de Términos</h3>
               </div>
               <div className="p-6">
@@ -306,10 +278,10 @@ export default function ManualViewer({ onClose }: ManualViewerProps) {
           {activeSection === 'herramientas' && (
             <div className="space-y-6">
               {herramientas.map((herramienta) => (
-                <div key={herramienta.id} className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-                  <div className="bg-gradient-to-r from-[#0a1122] to-slate-800 px-6 py-4">
+                <div key={herramienta.id} className="fluent-card overflow-hidden">
+                  <div className="bg-[#1B1B1F] px-5 py-4">
                     <div className="flex items-center gap-3">
-                      <Wrench className="text-amber-500" size={24} />
+                      <Wrench className="text-[#0078D4]" size={24} />
                       <div>
                         <h3 className="text-lg font-bold text-white">{herramienta.uso.split(' ')[0]}</h3>
                         <p className="text-xs text-slate-300">{herramienta.id}</p>
@@ -367,10 +339,10 @@ export default function ManualViewer({ onClose }: ManualViewerProps) {
           {/* Marco Legal Section */}
           {activeSection === 'legal' && (
             <div className="space-y-8">
-              <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-[#0a1122] to-slate-800 px-6 py-4">
+              <div className="fluent-card overflow-hidden">
+                <div className="bg-[#1B1B1F] px-5 py-4">
                   <div className="flex items-center gap-3">
-                    <Shield className="text-amber-500" size={24} />
+                    <Shield className="text-[#0078D4]" size={24} />
                     <h3 className="text-lg font-bold text-white">Constitución de la República</h3>
                   </div>
                 </div>
@@ -386,10 +358,10 @@ export default function ManualViewer({ onClose }: ManualViewerProps) {
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-[#0a1122] to-slate-800 px-6 py-4">
+              <div className="fluent-card overflow-hidden">
+                <div className="bg-[#1B1B1F] px-5 py-4">
                   <div className="flex items-center gap-3">
-                    <Scale className="text-amber-500" size={24} />
+                    <Scale className="text-[#0078D4]" size={24} />
                     <h3 className="text-lg font-bold text-white">Leyes Orgánicas y Especiales</h3>
                   </div>
                 </div>
@@ -429,10 +401,10 @@ export default function ManualViewer({ onClose }: ManualViewerProps) {
 
           {/* Estándares Section */}
           {activeSection === 'estandares' && (
-            <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-              <div className="bg-gradient-to-r from-[#0a1122] to-slate-800 px-6 py-4">
+            <div className="fluent-card overflow-hidden">
+              <div className="bg-[#1B1B1F] px-5 py-4">
                 <div className="flex items-center gap-3">
-                  <Award className="text-amber-500" size={24} />
+                  <Award className="text-[#0078D4]" size={24} />
                   <h3 className="text-lg font-bold text-white">Estándares Internacionales</h3>
                 </div>
               </div>

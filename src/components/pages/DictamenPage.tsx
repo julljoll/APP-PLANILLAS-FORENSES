@@ -1,6 +1,5 @@
 /**
- * Página: Dictamen Pericial de Extracción
- * Formulario según ISO/IEC 27042:2015
+ * Página: Dictamen Pericial — Fluent Design
  */
 import { useCallback } from 'react';
 import { FileText, Settings, Archive, Fingerprint, Plus, Trash2 } from 'lucide-react';
@@ -26,48 +25,48 @@ export default function DictamenPage({ report, onReportChange }: DictamenPagePro
   }, [report, onReportChange]);
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 md:gap-12">
-      <div className="space-y-6">
-        <FormCard title="I-II. Contexto y Evidencia (Estructura Obligatoria)" icon={<FileText size={16} />}>
-          <TextareaField label="Motivo de la Peritación" placeholder="Ej: Investigación penal solicitada para la extracción..." value={report.motivo} onChange={(v) => onReportChange({...report, motivo: v})} />
-          <TextareaField label="Descripción de la Evidencia" placeholder="Ej: Dispositivo móvil incautado entregado en custodia..." value={report.descripcion} onChange={(v) => onReportChange({...report, descripcion: v})} />
+    <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
+      <div className="space-y-5">
+        <FormCard title="I-II. Contexto y Evidencia" icon={<FileText size={15} />}>
+          <TextareaField label="Motivo de la Peritación" placeholder="Ej: Investigación penal solicitada..." value={report.motivo} onChange={(v) => onReportChange({...report, motivo: v})} className="mb-3" />
+          <TextareaField label="Descripción de la Evidencia" placeholder="Ej: Dispositivo móvil incautado..." value={report.descripcion} onChange={(v) => onReportChange({...report, descripcion: v})} />
         </FormCard>
-        <FormCard title="III. Exámenes Practicados (ISO/IEC 27042:2015)" icon={<Settings size={16} />}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <FormCard title="III. Exámenes Practicados (ISO 27042)" icon={<Settings size={15} />}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
             <InputField label="Versión Andriller" value={report.examenes.andrillerVersion} onChange={(v) => onReportChange({...report, examenes: {...report.examenes, andrillerVersion: v}})} />
             <InputField label="Versión ALEAPP" value={report.examenes.aleappVersion} onChange={(v) => onReportChange({...report, examenes: {...report.examenes, aleappVersion: v}})} />
             <InputField label="Versión Linux" value={report.examenes.linuxVersion} onChange={(v) => onReportChange({...report, examenes: {...report.examenes, linuxVersion: v}})} />
           </div>
-          <InputField label="Técnicas Empleadas" placeholder="Ej: Extracción lógica y física (solo lectura)..." className="mb-4" value={report.examenes.tecnicas} onChange={(v) => onReportChange({...report, examenes: {...report.examenes, tecnicas: v}})} />
+          <InputField label="Técnicas Empleadas" placeholder="Ej: Extracción lógica y física..." className="mb-3" value={report.examenes.tecnicas} onChange={(v) => onReportChange({...report, examenes: {...report.examenes, tecnicas: v}})} />
           <InputField label="Hash Global (Integridad)" placeholder="Ej: e3b0c44298fc1c149afbf..." fontMono value={report.examenes.valoresHashGrales} onChange={(v) => onReportChange({...report, examenes: {...report.examenes, valoresHashGrales: v}})} />
         </FormCard>
       </div>
-      <div className="space-y-6">
-        <FormCard title="IV. Resultados Obtenidos" icon={<Archive size={16} />} action={
-          <button onClick={addResult} className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1 text-amber-600 hover:text-amber-700 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-md transition-colors border border-amber-200/50"><Plus size={14} /> Agregar</button>
+      <div className="space-y-5">
+        <FormCard title="IV. Resultados Obtenidos" icon={<Archive size={15} />} action={
+          <button onClick={addResult} className="fluent-btn-primary text-[11px] px-3 py-1.5"><Plus size={13} /> Agregar</button>
         }>
-          <div className="space-y-3 max-h-[250px] overflow-y-auto pr-2">
+          <div className="space-y-2.5 max-h-[280px] overflow-y-auto pr-1">
             {report.resultados.map((res) => (
-              <div key={res.id} className="bg-slate-100 p-3 rounded border border-slate-200 relative group">
-                <button onClick={() => removeResult(res.id)} className="absolute top-2 right-2 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 size={14} /></button>
-                <div className="grid grid-cols-2 gap-3 mb-2">
-                  <InputField label="Nombre Archivo Nativo" placeholder="Ej: msgstore.db" value={res.name} onChange={v => updateResult(res.id, 'name', v)} />
+              <div key={res.id} className="bg-[#FAFAFA] p-3 rounded-lg border border-[#E0E0E0] relative group">
+                <button onClick={() => removeResult(res.id)} className="absolute top-2 right-2 text-[#9E9E9E] hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 size={13} /></button>
+                <div className="grid grid-cols-2 gap-2.5 mb-2">
+                  <InputField label="Nombre Archivo" placeholder="Ej: msgstore.db" value={res.name} onChange={v => updateResult(res.id, 'name', v)} />
                   <InputField label="Tamaño" placeholder="Ej: 102.4 MB" value={res.size} onChange={v => updateResult(res.id, 'size', v)} />
                 </div>
-                <div className="grid grid-cols-2 gap-3 mb-2">
+                <div className="grid grid-cols-2 gap-2.5 mb-2">
                   <InputField label="Ruta" placeholder="Ej: /data/data/com.whatsapp/" fontMono value={res.path} onChange={v => updateResult(res.id, 'path', v)} />
-                  <InputField label="Fecha de Modificación" placeholder="DD/MM/AAAA" value={res.date} onChange={v => updateResult(res.id, 'date', v)} />
+                  <InputField label="Fecha Modificación" placeholder="DD/MM/AAAA" value={res.date} onChange={v => updateResult(res.id, 'date', v)} />
                 </div>
-                <div><InputField label="Hash MD5/SHA Individual" placeholder="Ej: 5d41402abc4b2a76b9719d..." fontMono value={res.hash} onChange={v => updateResult(res.id, 'hash', v)} /></div>
+                <InputField label="Hash MD5/SHA" placeholder="Ej: 5d41402abc4b2a76b9719d..." fontMono value={res.hash} onChange={v => updateResult(res.id, 'hash', v)} />
               </div>
             ))}
           </div>
         </FormCard>
-        <FormCard title="V-VI. Conclusiones y Consumo de Evidencia" icon={<Fingerprint size={16} />}>
-          <TextareaField label="Conclusiones (Sin precalificación jurídica)" value={report.conclusiones} onChange={v => onReportChange({...report, conclusiones: v})} className="mb-4" />
-          <TextareaField label="Consumo o alteración de Evidencia" value={report.consumoEvidencia} onChange={v => onReportChange({...report, consumoEvidencia: v})} />
-          <div className="grid grid-cols-2 gap-4 mt-4">
-            <InputField label="Perito Informático" placeholder="Ej: Ing. Perito Forense" value={report.perito.nombre} onChange={v => onReportChange({...report, perito: {...report.perito, nombre: v}})} />
+        <FormCard title="V-VI. Conclusiones y Consumo" icon={<Fingerprint size={15} />}>
+          <TextareaField label="Conclusiones (Sin precalificación jurídica)" value={report.conclusiones} onChange={v => onReportChange({...report, conclusiones: v})} className="mb-3" />
+          <TextareaField label="Consumo o alteración de Evidencia" value={report.consumoEvidencia} onChange={v => onReportChange({...report, consumoEvidencia: v})} className="mb-3" />
+          <div className="grid grid-cols-2 gap-3">
+            <InputField label="Perito Informático" placeholder="Ej: Ing. Perito" value={report.perito.nombre} onChange={v => onReportChange({...report, perito: {...report.perito, nombre: v}})} />
             <InputField label="Sello Institucional" placeholder="Ej: 001-VZ-FOR" fontMono value={report.perito.sello} onChange={v => onReportChange({...report, perito: {...report.perito, sello: v}})} />
           </div>
         </FormCard>

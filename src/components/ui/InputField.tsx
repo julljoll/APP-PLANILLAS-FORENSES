@@ -1,7 +1,6 @@
 /**
- * Campo de entrada reutilizable con etiqueta
+ * Campo de entrada — Fluent Design Input
  */
-
 import { memo } from 'react';
 
 interface InputFieldProps {
@@ -23,13 +22,11 @@ const InputField = memo(function InputField({
 }: InputFieldProps) {
   return (
     <div className={className}>
-      <label className="block text-[11px] font-bold tracking-wider uppercase text-slate-500 mb-1.5">
+      <label className="block text-[11px] font-semibold text-[#616161] mb-1.5 tracking-wide">
         {label}
       </label>
       <input
-        className={`w-full text-sm bg-slate-50 border border-slate-200 rounded-md py-2.5 px-3 focus:bg-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 hover:border-slate-300 outline-none transition-all ${
-          fontMono ? 'font-mono text-slate-600' : 'text-slate-800'
-        }`}
+        className={`fluent-input ${fontMono ? 'font-mono text-[#616161]' : ''}`}
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}

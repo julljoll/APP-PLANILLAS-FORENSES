@@ -1,7 +1,6 @@
 /**
- * Campo de texto multilínea reutilizable con etiqueta
+ * Campo de texto multilínea — Fluent Design Textarea
  */
-
 import { memo } from 'react';
 
 interface TextareaFieldProps {
@@ -21,11 +20,11 @@ const TextareaField = memo(function TextareaField({
 }: TextareaFieldProps) {
   return (
     <div className={className}>
-      <label className="block text-[11px] font-bold tracking-wider uppercase text-slate-500 mb-1.5">
+      <label className="block text-[11px] font-semibold text-[#616161] mb-1.5 tracking-wide">
         {label}
       </label>
       <textarea
-        className="w-full text-sm bg-slate-50 border border-slate-200 rounded-md py-2.5 px-3 focus:bg-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500 hover:border-slate-300 outline-none h-24 resize-none transition-all text-slate-800"
+        className="fluent-input h-24 resize-none"
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}

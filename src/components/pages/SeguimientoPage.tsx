@@ -1,8 +1,7 @@
 /**
- * Página: Seguimiento y Auditoría de Evidencia
- * Incluye acceso al protocolo HTML y el dashboard forense interactivo
+ * Página: Seguimiento y Auditoría — Fluent Design
  */
-import { BookOpen } from 'lucide-react';
+import { BookOpen, ExternalLink } from 'lucide-react';
 import ForensicDashboard from '../ForensicDashboard';
 
 interface SeguimientoPageProps {
@@ -11,23 +10,26 @@ interface SeguimientoPageProps {
 
 export default function SeguimientoPage({ onOpenTemplate }: SeguimientoPageProps) {
   return (
-    <div className="space-y-8">
-      <div className="bg-amber-50 border border-amber-200 p-6 rounded-xl flex items-center justify-between shadow-sm">
-        <div>
-          <h3 className="text-sm font-bold text-amber-800 uppercase tracking-wide flex items-center gap-2">
-            <BookOpen size={18} /> Protocolo Forense Interactivo (HTML)
-          </h3>
-          <p className="text-xs text-amber-700 mt-1">
-            Acceda a la guía paso a paso con "Cero Riesgo de Nulidad" para el procesamiento de evidencias.
-          </p>
+    <div className="space-y-6">
+      {/* Fluent info banner */}
+      <div className="fluent-card p-4 flex items-center justify-between bg-[#DEECF9] border-[#B4D6F0]">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-md bg-[#0078D4] text-white">
+            <BookOpen size={18} />
+          </div>
+          <div>
+            <h3 className="text-[13px] font-semibold text-[#1A1A1A]">Protocolo Forense Interactivo</h3>
+            <p className="text-[11px] text-[#616161] mt-0.5">Guía paso a paso con "Cero Riesgo de Nulidad" para el procesamiento de evidencias.</p>
+          </div>
         </div>
         <button
           onClick={() => onOpenTemplate('seguimiento.html')}
-          className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all shadow-md"
+          className="fluent-btn-primary text-[12px] shrink-0"
         >
-          Ver Protocolo Completo
+          <ExternalLink size={14} /> Ver Protocolo
         </button>
       </div>
+
       <ForensicDashboard />
     </div>
   );

@@ -1,28 +1,215 @@
 @import "tailwindcss";
 
+/* ══════════════════════════════════════════════════════════
+   SHA256.US — Microsoft Fluent Design System
+   Laboratorio de Informática Forense y Ciberseguridad
+   ══════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 @theme {
-  --font-sans: Arial, Helvetica, sans-serif;
-  --font-serif: Arial, Helvetica, sans-serif;
+  --font-sans: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Inter', 'Segoe UI', sans-serif;
+  --font-mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+
+  /* Fluent accent palette */
+  --color-fluent-blue: #0078D4;
+  --color-fluent-blue-hover: #106EBE;
+  --color-fluent-blue-pressed: #005A9E;
+  --color-fluent-blue-light: #DEECF9;
+  --color-fluent-blue-glow: rgba(0, 120, 212, 0.35);
+
+  /* Fluent surfaces */
+  --color-surface-base: #F5F5F5;
+  --color-surface-card: #FFFFFF;
+  --color-surface-sidebar: #1B1B1F;
+  --color-surface-sidebar-hover: #2D2D30;
+  --color-surface-elevated: #FAFAFA;
+
+  /* Fluent text */
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: #616161;
+  --color-text-tertiary: #9E9E9E;
+  --color-text-inverse: #FFFFFF;
+  --color-text-accent: #0078D4;
+
+  /* Fluent borders */
+  --color-border-default: #E0E0E0;
+  --color-border-subtle: #F0F0F0;
+  --color-border-strong: #D1D1D1;
+  --color-border-focus: #0078D4;
 }
 
 @layer base {
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
-    background-color: #fcfcfd;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #0f172a; /* text-slate-900 */
+    background-color: var(--color-surface-base);
+    font-family: var(--font-sans);
+    color: var(--color-text-primary);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Fluent scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #C4C4C4;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #A0A0A0;
+  }
+
+  /* Selection color */
+  ::selection {
+    background-color: var(--color-fluent-blue-light);
+    color: var(--color-text-primary);
   }
 }
 
 @layer components {
+
+  /* ── Fluent Acrylic Sidebar ── */
+  .fluent-sidebar {
+    background: linear-gradient(180deg, #1B1B1F 0%, #161619 100%);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* ── Fluent Card ── */
+  .fluent-card {
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-border-default);
+    border-radius: 8px;
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.04),
+      0 0 1px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .fluent-card:hover {
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.08),
+      0 0 1px rgba(0, 0, 0, 0.12);
+    border-color: var(--color-border-strong);
+  }
+
+  /* ── Fluent Input ── */
+  .fluent-input {
+    width: 100%;
+    font-size: 13px;
+    background: var(--color-surface-card);
+    border: 1px solid var(--color-border-default);
+    border-bottom: 2px solid var(--color-border-strong);
+    border-radius: 4px;
+    padding: 8px 12px;
+    color: var(--color-text-primary);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .fluent-input::placeholder {
+    color: var(--color-text-tertiary);
+  }
+  .fluent-input:hover {
+    border-color: var(--color-border-strong);
+  }
+  .fluent-input:focus {
+    border-bottom-color: var(--color-fluent-blue);
+    box-shadow: 0 0 0 0 transparent;
+    background: var(--color-surface-card);
+  }
+
+  /* ── Fluent Primary Button ── */
+  .fluent-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--color-fluent-blue);
+    color: white;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.12s ease, box-shadow 0.12s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  }
+  .fluent-btn-primary:hover {
+    background: var(--color-fluent-blue-hover);
+  }
+  .fluent-btn-primary:active {
+    background: var(--color-fluent-blue-pressed);
+    box-shadow: none;
+  }
+  .fluent-btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* ── Fluent Secondary Button ── */
+  .fluent-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--color-surface-card);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border-default);
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.12s ease, border-color 0.12s ease;
+  }
+  .fluent-btn-secondary:hover {
+    background: var(--color-surface-base);
+    border-color: var(--color-border-strong);
+  }
+  .fluent-btn-secondary:active {
+    background: var(--color-border-subtle);
+  }
+
+  /* ── Fluent Badge / Tag ── */
+  .fluent-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  /* ── Fluent Divider ── */
+  .fluent-divider {
+    height: 1px;
+    background: var(--color-border-subtle);
+    border: none;
+    margin: 0;
+  }
+
+  /* ── Document page for print ── */
   .document-page {
-    width: 215.9mm; /* Letter width */
-    min-height: 279.4mm; /* Letter height */
+    width: 215.9mm;
+    min-height: 279.4mm;
     padding: 20mm;
     background: white;
     margin: 20px auto;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     color: black;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--font-sans);
     position: relative;
     box-sizing: border-box;
   }
@@ -36,67 +223,21 @@
     align-items: flex-start;
   }
 
-  /* Document specific print styles */
-  .doc-header {
-    border-bottom: 2px solid black;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-  }
-
-  .doc-section {
-    margin-bottom: 1rem;
-  }
-
-  .doc-section-title {
-    font-weight: bold;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-    background-color: #e5e7eb;
-    padding: 2px 4px;
-    border: 1px solid black;
-  }
-
-  .doc-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.8rem;
-    margin-top: 0.5rem;
-  }
-
-  .doc-table th, .doc-table td {
-    border: 1px solid black;
-    padding: 4px;
-    text-align: left;
-  }
-
-  .doc-table th {
-    background-color: #f3f4f6;
-    font-weight: bold;
-  }
+  /* Document-specific styles */
+  .doc-header { border-bottom: 2px solid black; margin-bottom: 1rem; padding-bottom: 0.5rem; }
+  .doc-section { margin-bottom: 1rem; }
+  .doc-section-title { font-weight: bold; text-transform: uppercase; margin-bottom: 0.5rem; font-size: 0.9rem; background-color: #e5e7eb; padding: 2px 4px; border: 1px solid black; }
+  .doc-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 0.5rem; }
+  .doc-table th, .doc-table td { border: 1px solid black; padding: 4px; text-align: left; }
+  .doc-table th { background-color: #f3f4f6; font-weight: bold; }
 
   @media print {
-    body {
-      background-color: white;
-    }
-    .print\:hidden {
-      display: none !important;
-    }
-    .document-page {
-      margin: 0;
-      padding: 10mm;
-      box-shadow: none;
-      width: auto;
-      min-height: auto;
-    }
-    .pdf-viewer-bg {
-      background-color: transparent;
-      padding: 0;
-      display: block;
-    }
+    body { background-color: white; }
+    .print\:hidden { display: none !important; }
+    .document-page { margin: 0; padding: 10mm; box-shadow: none; width: auto; min-height: auto; }
+    .pdf-viewer-bg { background-color: transparent; padding: 0; display: block; }
   }
 
-  /* Vertical text for PRCC section labels */
   .writing-vertical {
     writing-mode: vertical-rl;
     text-orientation: mixed;
@@ -107,4 +248,20 @@
     justify-content: center;
     min-height: 40px;
   }
+}
+
+/* ── Micro-animations ── */
+@keyframes fluent-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fluent-pulse-ring {
+  0% { box-shadow: 0 0 0 0 var(--color-fluent-blue-glow); }
+  70% { box-shadow: 0 0 0 6px rgba(0, 120, 212, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 120, 212, 0); }
+}
+
+.animate-fluent-in {
+  animation: fluent-fade-in 0.3s ease-out;
 }
