@@ -27,7 +27,8 @@ proyecto:
       distros:
         - "CAINE (Computer Aided INvestigative Environment) - Distribución live forense"
         - "Tsurugi Linux - DFIR / Respuesta a Incidentes"
-        - "Antoku - Distribución especializada en dispositivos móviles"
+        - "Santoku Linux - Distribución especializada en forense móvil"
+        - "Kali Linux - Plataforma avanzada de pruebas de penetración y forense"
 
 # ============================================
 # ARQUITECTURA DEL SISTEMA

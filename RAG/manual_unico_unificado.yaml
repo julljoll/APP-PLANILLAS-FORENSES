@@ -538,7 +538,7 @@ herramientas_forenses:
         enfoque_movil: "Análisis de artefactos Android, reconstrucción de timelines"
         enfoque_incidentes: "Respuesta rápida a incidentes con herramientas DFIR integradas"
 
-      - nombre: "Antoku (Distribución Linux Forense)"
+      - nombre: "Santoku Linux"
         uso: "Distribución Linux especializada para análisis forense de dispositivos móviles"
         caracteristicas:
           - "Enfocada en extracción de datos de smartphones"
@@ -547,11 +547,19 @@ herramientas_forenses:
           - "Scripts automatizados de extracción"
         enfoque_movil: "Análisis directo de filesystems Android y bases de datos de mensajería"
 
+      - nombre: "Kali Linux"
+        uso: "Plataforma avanzada de pruebas de penetración y forense"
+        caracteristicas:
+          - "Amplio repositorio de herramientas forenses"
+          - "Soporte para múltiples arquitecturas"
+          - "Herramientas de recuperación de datos y análisis de memoria"
+        enfoque_forense: "Análisis profundo de artefactos y recuperación de datos"
+
   # ── Herramientas de Extracción ──
   andriller:
     version: "v3.6.2+"
     uso: "Extracción lógica y física en dispositivos Android"
-    plataforma: "Linux (CAINE / Tsurugi / Antoku)"
+    plataforma: "Linux (CAINE / Tsurugi / Santoku / Kali Linux)"
     caracteristicas:
       - "Solo lectura (no destructivo)"
       - "Forensemente sólido"
@@ -567,7 +575,7 @@ herramientas_forenses:
     version: "v2.1.0+"
     nombre_completo: "Android Logs Events And Protobuf Parser"
     uso: "Parseo de SQLite, Protobuf, reconstrucción de eventos"
-    plataforma: "Linux (CAINE / Tsurugi / Antoku)"
+    plataforma: "Linux (CAINE / Tsurugi / Santoku / Kali Linux)"
     artefactos:
       whatsapp:
         - "Mensajes enviados/recibidos"

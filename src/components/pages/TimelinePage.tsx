@@ -26,7 +26,7 @@ const categories = [
   { value: 'archivo', label: 'Archivo', icon: FileText, color: '#CA5010' },
 ];
 
-const sources = ['WhatsApp', 'SMS', 'Llamadas', 'GPS', 'Cámara', 'Navegador', 'Contacts.db', 'Sistema Android', 'ALEAPP', 'Andriller', 'CAINE', 'Tsurugi', 'Antoku'];
+const sources = ['WhatsApp', 'SMS', 'Llamadas', 'GPS', 'Cámara', 'Navegador', 'Contacts.db', 'Sistema Android', 'ALEAPP', 'Andriller', 'CAINE', 'Tsurugi', 'Santoku', 'Kali Linux'];
 
 export default function TimelinePage() {
   const [events, setEvents] = useState<TimelineEvent[]>([]);
@@ -169,7 +169,8 @@ export default function TimelinePage() {
             <select className="fluent-input" value={distroUsed} onChange={(e) => setDistroUsed(e.target.value)}>
               <option value="CAINE">CAINE (Computer Aided INvestigative Environment)</option>
               <option value="Tsurugi">Tsurugi Linux (DFIR / Incident Response)</option>
-              <option value="Antoku">Antoku (Mobile Forensics)</option>
+              <option value="Santoku">Santoku Linux (Mobile Forensics)</option>
+              <option value="Kali Linux">Kali Linux (Advanced Penetration Testing & Forensics)</option>
             </select>
           </div>
         </FormCard>

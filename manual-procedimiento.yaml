@@ -532,21 +532,30 @@ herramientas:
         enfoque_movil: "Análisis de artefactos Android, reconstrucción de timelines"
         enfoque_incidentes: "Respuesta rápida a incidentes con herramientas DFIR integradas"
         
-      - nombre: "Antoku"
+      - nombre: "Santoku"
         id: "HERR-DIST-003"
-        uso: "Distribución Linux especializada en dispositivos móviles"
+        uso: "Distribución Linux especializada en forense móvil"
         caracteristicas:
           - "Enfocada en extracción de datos de smartphones"
           - "Herramientas de análisis de bases de datos SQLite"
           - "Compatibilidad con formatos de imagen forense"
           - "Scripts automatizados de extracción"
         enfoque_movil: "Análisis directo de filesystems Android y bases de datos de mensajería"
+        
+      - nombre: "Kali Linux"
+        id: "HERR-DIST-004"
+        uso: "Plataforma avanzada de pruebas de penetración y forense"
+        caracteristicas:
+          - "Amplio repositorio de herramientas forenses"
+          - "Soporte para múltiples arquitecturas"
+          - "Herramientas de recuperación de datos y análisis de memoria"
+        enfoque_forense: "Análisis profundo de artefactos y recuperación de datos"
 
   # ── Herramientas de Extracción ──
   andriller:
     id: "HERR-001"
     uso: "Extracción lógica y física en dispositivos Android"
-    plataforma: "Linux (CAINE / Tsurugi / Antoku)"
+    plataforma: "Linux (CAINE / Tsurugi / Santoku / Kali Linux)"
     caracteristicas:
       - "Solo lectura (no destructivo)"
       - "Forensemente sólido"
@@ -559,7 +568,7 @@ herramientas:
     id: "HERR-002"
     uso: "Android Logs Events And Protobuf Parser"
     funcion: "Parseo de SQLite, Protobuf, reconstrucción de eventos WhatsApp"
-    plataforma: "Linux (CAINE / Tsurugi / Antoku)"
+    plataforma: "Linux (CAINE / Tsurugi / Santoku / Kali Linux)"
     version_requerida: "Documentar versión exacta usada"
     artefactos_soportados:
       - "WhatsApp"
