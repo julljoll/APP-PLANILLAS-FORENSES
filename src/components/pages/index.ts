@@ -6,3 +6,4 @@ export { default as DictamenPage } from './DictamenPage';
 export { default as PRCCPage } from './PRCCPage';
 export { default as ActaPage } from './ActaPage';
 export { default as SeguimientoPage } from './SeguimientoPage';
+export { default as TimelinePage } from './TimelinePage';

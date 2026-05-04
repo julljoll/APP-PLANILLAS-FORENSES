@@ -506,20 +506,60 @@ estandares:
 # ============================================
 
 herramientas:
+  # ── Plataforma Linux Forense ──
+  plataforma:
+    descripcion: "Todas las extracciones y análisis se ejecutan sobre distribuciones Linux forenses"
+    distros:
+      - nombre: "CAINE"
+        id: "HERR-DIST-001"
+        nombre_completo: "Computer Aided INvestigative Environment"
+        uso: "Distribución live forense completa"
+        caracteristicas:
+          - "Entorno live (no altera el dispositivo)"
+          - "Write-blocker integrado"
+          - "Herramientas preinstaladas: Autopsy, Guymager, Scalpel"
+          - "Interfaz gráfica optimizada para peritaje"
+        enfoque_movil: "Montaje seguro de imágenes, extracción de filesystems Android"
+        
+      - nombre: "Tsurugi Linux"
+        id: "HERR-DIST-002"
+        uso: "DFIR (Digital Forensics and Incident Response)"
+        caracteristicas:
+          - "Orientada a respuesta a incidentes y forense digital"
+          - "Herramientas de OSINT, malware analysis y network forensics"
+          - "Soporte nativo para dispositivos móviles"
+          - "Módulos de timeline reconstruction"
+        enfoque_movil: "Análisis de artefactos Android, reconstrucción de timelines"
+        enfoque_incidentes: "Respuesta rápida a incidentes con herramientas DFIR integradas"
+        
+      - nombre: "Antoku"
+        id: "HERR-DIST-003"
+        uso: "Distribución Linux especializada en dispositivos móviles"
+        caracteristicas:
+          - "Enfocada en extracción de datos de smartphones"
+          - "Herramientas de análisis de bases de datos SQLite"
+          - "Compatibilidad con formatos de imagen forense"
+          - "Scripts automatizados de extracción"
+        enfoque_movil: "Análisis directo de filesystems Android y bases de datos de mensajería"
+
+  # ── Herramientas de Extracción ──
   andriller:
     id: "HERR-001"
     uso: "Extracción lógica y física en dispositivos Android"
+    plataforma: "Linux (CAINE / Tsurugi / Antoku)"
     caracteristicas:
       - "Solo lectura (no destructivo)"
       - "Forensemente sólido"
       - "Código abierto"
     version_requerida: "Documentar versión exacta usada"
     compatibilidad: "Android 4.0+"
-    
+
+  # ── Herramientas de Análisis ──    
   aleapp:
     id: "HERR-002"
     uso: "Android Logs Events And Protobuf Parser"
     funcion: "Parseo de SQLite, Protobuf, reconstrucción de eventos WhatsApp"
+    plataforma: "Linux (CAINE / Tsurugi / Antoku)"
     version_requerida: "Documentar versión exacta usada"
     artefactos_soportados:
       - "WhatsApp"
@@ -527,6 +567,11 @@ herramientas:
       - "Llamadas"
       - "Ubicaciones"
       - "Aplicaciones instaladas"
+    formatos_salida:
+      - "HTML interactivo"
+      - "CSV/Excel"
+      - "JSON"
+      - "Timeline (ISO 27042)"
 
 # ============================================
 # CONTROL DE VERSIONES

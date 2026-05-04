@@ -513,9 +513,45 @@ areas_resguardo:
 # ============================================
 
 herramientas_forenses:
+  # ── Entorno de Análisis: Distribuciones Linux Forenses ──
+  plataforma_linux:
+    descripcion: "Todas las extracciones y análisis se realizan sobre sistemas Linux forenses"
+    distros:
+      - nombre: "CAINE (Computer Aided INvestigative Environment)"
+        version: "13.0+"
+        uso: "Distribución forense completa para análisis de dispositivos móviles y discos"
+        caracteristicas:
+          - "Entorno live que no altera el dispositivo conectado"
+          - "Herramientas preinstaladas: Autopsy, Guymager, Scalpel"
+          - "Modo write-blocker integrado"
+          - "Interfaz gráfica optimizada para peritaje"
+        enfoque_movil: "Montaje seguro de imágenes, extracción de filesystems Android"
+
+      - nombre: "Tsurugi Linux"
+        version: "2024.1+"
+        uso: "Distribución DFIR (Digital Forensics and Incident Response)"
+        caracteristicas:
+          - "Orientada a respuesta a incidentes y forense digital"
+          - "Herramientas de OSINT, malware analysis y network forensics"
+          - "Soporte nativo para dispositivos móviles"
+          - "Módulos de timeline reconstruction"
+        enfoque_movil: "Análisis de artefactos Android, reconstrucción de timelines"
+        enfoque_incidentes: "Respuesta rápida a incidentes con herramientas DFIR integradas"
+
+      - nombre: "Antoku (Distribución Linux Forense)"
+        uso: "Distribución Linux especializada para análisis forense de dispositivos móviles"
+        caracteristicas:
+          - "Enfocada en extracción de datos de smartphones"
+          - "Herramientas de análisis de bases de datos SQLite"
+          - "Compatibilidad con formatos de imagen forense"
+          - "Scripts automatizados de extracción"
+        enfoque_movil: "Análisis directo de filesystems Android y bases de datos de mensajería"
+
+  # ── Herramientas de Extracción ──
   andriller:
     version: "v3.6.2+"
     uso: "Extracción lógica y física en dispositivos Android"
+    plataforma: "Linux (CAINE / Tsurugi / Antoku)"
     caracteristicas:
       - "Solo lectura (no destructivo)"
       - "Forensemente sólido"
@@ -525,11 +561,13 @@ herramientas_forenses:
       - tipo: "física"
         descripcion: "Extracción bit-a-bit completa"
         requerimiento: "Root o bootloader desbloqueado"
-        
+
+  # ── Herramientas de Análisis ──
   aleapp:
     version: "v2.1.0+"
     nombre_completo: "Android Logs Events And Protobuf Parser"
     uso: "Parseo de SQLite, Protobuf, reconstrucción de eventos"
+    plataforma: "Linux (CAINE / Tsurugi / Antoku)"
     artefactos:
       whatsapp:
         - "Mensajes enviados/recibidos"
@@ -550,7 +588,7 @@ herramientas_forenses:
       - "HTML interactivo"
       - "CSV/Excel"
       - "JSON"
-      - "Timeline"
+      - "Timeline (ISO 27042)"
 
 # ============================================
 # DICTAMEN PERICIAL

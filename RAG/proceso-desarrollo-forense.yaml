@@ -22,6 +22,12 @@ proyecto:
     herramientas_externas:
       - "Andriller v3.6.2+ (Extracción forense)"
       - "ALEAPP v2.1.0+ (Análisis de artefactos)"
+    plataforma_forense:
+      descripcion: "Todas las extracciones y análisis se ejecutan sobre Linux"
+      distros:
+        - "CAINE (Computer Aided INvestigative Environment) - Distribución live forense"
+        - "Tsurugi Linux - DFIR / Respuesta a Incidentes"
+        - "Antoku - Distribución especializada en dispositivos móviles"
 
 # ============================================
 # ARQUITECTURA DEL SISTEMA

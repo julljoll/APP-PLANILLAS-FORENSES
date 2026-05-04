@@ -35,7 +35,7 @@ export default function DictamenPage({ report, onReportChange }: DictamenPagePro
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
             <InputField label="Versión Andriller" value={report.examenes.andrillerVersion} onChange={(v) => onReportChange({...report, examenes: {...report.examenes, andrillerVersion: v}})} />
             <InputField label="Versión ALEAPP" value={report.examenes.aleappVersion} onChange={(v) => onReportChange({...report, examenes: {...report.examenes, aleappVersion: v}})} />
-            <InputField label="Versión Linux" value={report.examenes.linuxVersion} onChange={(v) => onReportChange({...report, examenes: {...report.examenes, linuxVersion: v}})} />
+            <InputField label="Distro Linux (CAINE/Tsurugi/Antoku)" value={report.examenes.linuxVersion} onChange={(v) => onReportChange({...report, examenes: {...report.examenes, linuxVersion: v}})} />
           </div>
           <InputField label="Técnicas Empleadas" placeholder="Ej: Extracción lógica y física..." className="mb-3" value={report.examenes.tecnicas} onChange={(v) => onReportChange({...report, examenes: {...report.examenes, tecnicas: v}})} />
           <InputField label="Hash Global (Integridad)" placeholder="Ej: e3b0c44298fc1c149afbf..." fontMono value={report.examenes.valoresHashGrales} onChange={(v) => onReportChange({...report, examenes: {...report.examenes, valoresHashGrales: v}})} />

@@ -100,7 +100,8 @@ export type AppTab =
   | 'prcc'
   | 'dictamen'
   | 'manual'
-  | 'seguimiento';
+  | 'seguimiento'
+  | 'timeline';
 
 // ── Electron API (preload bridge) ──
 

@@ -12,13 +12,13 @@
 import { useState, useCallback } from 'react';
 import {
   FileText, Shield, Printer, History, ClipboardList,
-  PenTool, LayoutTemplate, BookOpen, Lock,
+  PenTool, LayoutTemplate, BookOpen, Lock, Clock,
 } from 'lucide-react';
 
 import type { AppTab, ReportData, PRCCData, ActaData } from './types';
 import { initialReport, initialPRCC, initialActa } from './constants/initial-states';
 import { SidebarButton } from './components/ui';
-import { GestorPRCC, DictamenPage, PRCCPage, ActaPage, SeguimientoPage } from './components/pages';
+import { GestorPRCC, DictamenPage, PRCCPage, ActaPage, SeguimientoPage, TimelinePage } from './components/pages';
 import ManualViewer from './components/ManualViewer';
 import { PrintDictamen, PrintPRCC, PrintActa } from './components/PrintTemplates';
 
@@ -53,6 +53,7 @@ export default function App() {
     prcc: { title: 'Planilla de Registro de Cadena de Custodia', desc: 'Complete los campos a continuación para generar el documento oficial bajo el marco procesal penal.' },
     dictamen: { title: 'Dictamen Pericial de Extracción', desc: 'Complete los campos a continuación para generar el documento oficial bajo el marco procesal penal.' },
     seguimiento: { title: 'Seguimiento y Auditoría de Evidencia', desc: 'Monitoree el ciclo de vida, ubicación física e integridad de cada dispositivo móvil bajo custodia.' },
+    timeline: { title: 'Timeline Forense — ISO/IEC 27042:2015', desc: 'Reconstruya la línea de tiempo de eventos extraídos del dispositivo para su impresión legal en PDF.' },
   };
 
   const meta = tabMeta[activeTab as Exclude<AppTab, 'manual'>];
@@ -82,6 +83,7 @@ export default function App() {
           <SidebarButton active={activeTab === 'prcc'} onClick={() => setActiveTab('prcc')} icon={<LayoutTemplate size={16} />} label="Planilla PRCC" />
           <SidebarButton active={activeTab === 'dictamen'} onClick={() => setActiveTab('dictamen')} icon={<FileText size={16} />} label="Dictamen Pericial" />
           <SidebarButton active={activeTab === 'seguimiento'} onClick={() => setActiveTab('seguimiento')} icon={<ClipboardList size={16} />} label="Seguimiento" />
+          <SidebarButton active={activeTab === 'timeline'} onClick={() => setActiveTab('timeline')} icon={<Clock size={16} />} label="Timeline ISO 27042" />
 
           <div className="h-px bg-white/[0.06] my-4 mx-3" />
 
@@ -95,7 +97,7 @@ export default function App() {
         <div className="px-3 pb-4 space-y-3">
           <button
             onClick={() => setIsPrintMode(true)}
-            disabled={activeTab === 'gestor-prcc' || activeTab === 'seguimiento'}
+            disabled={activeTab === 'gestor-prcc' || activeTab === 'seguimiento' || activeTab === 'timeline'}
             className="w-full flex items-center justify-center gap-2 bg-[#0078D4] hover:bg-[#106EBE] active:bg-[#005A9E] text-white px-4 py-2.5 rounded-md text-[13px] font-semibold transition-all disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <Printer size={15} /> Imprimir Vista
@@ -135,6 +137,7 @@ export default function App() {
             {activeTab === 'prcc' && <PRCCPage prcc={prcc} onPrccChange={setPrcc} onOpenTemplate={handleOpenTemplate} />}
             {activeTab === 'acta' && <ActaPage acta={acta} onActaChange={setActa} onOpenTemplate={handleOpenTemplate} />}
             {activeTab === 'seguimiento' && <SeguimientoPage onOpenTemplate={handleOpenTemplate} />}
+            {activeTab === 'timeline' && <TimelinePage />}
           </div>
         </div>
       </main>
