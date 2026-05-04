@@ -5,6 +5,7 @@
 
 import { useState } from 'react';
 import { Book, FileText, Shield, Scale, Wrench, Award, Info } from 'lucide-react';
+import { SidebarButton } from './ui';
 import { 
   manualProcedimiento, 
   getFases, 
@@ -464,18 +465,5 @@ export default function ManualViewer({ onClose }: ManualViewerProps) {
   );
 }
 
-function SidebarButton({ active, onClick, icon, label }: any) {
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all ${
-        active 
-          ? 'bg-amber-500/20 text-amber-500 border border-amber-500/30' 
-          : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
-      }`}
-    >
-      <span className={active ? 'text-amber-500' : ''}>{icon}</span>
-      <span>{label}</span>
-    </button>
-  );
-}
+
+
